@@ -7,9 +7,101 @@
             "id": "d8426cea-cef3-4f50-8feb-bf210f1bc648",
             "actions": [
                 {
-                    "name": "New action",
+                    "name": "Pause",
                     "type": "Button",
                     "id": "d1ce61f8-ee46-4f74-a05e-efe79c336c41",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Move",
+                    "type": "Value",
+                    "id": "c6f38bc5-a760-4fd9-b432-8817f5d9ab31",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "e68f9aef-fec6-4cff-9d6a-50a508aca5ef",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Pause",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "2D Vector",
+                    "id": "43b6d39f-cb64-40fc-b002-91260f728861",
+                    "path": "2DVector",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "up",
+                    "id": "e44979c9-79be-47df-ab98-2ce701dabba2",
+                    "path": "<Keyboard>/w",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "down",
+                    "id": "88381f8b-0437-40d0-b3a6-d3e4ecb283c1",
+                    "path": "<Keyboard>/s",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "left",
+                    "id": "4227a2ad-2133-4175-b411-6ad3ff247a6e",
+                    "path": "<Keyboard>/a",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "right",
+                    "id": "1262f29f-b83f-4c66-a023-528f6c317314",
+                    "path": "<Keyboard>/d",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                }
+            ]
+        },
+        {
+            "name": "UI",
+            "id": "bb7d4d5f-2391-4998-90ce-c5d1c28ad2b7",
+            "actions": [
+                {
+                    "name": "Unpause",
+                    "type": "Button",
+                    "id": "28cba8e4-e8e7-44b6-9941-0c955bcbb24c",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -19,12 +111,12 @@
             "bindings": [
                 {
                     "name": "",
-                    "id": "e68f9aef-fec6-4cff-9d6a-50a508aca5ef",
-                    "path": "",
+                    "id": "4557193f-4967-4535-9411-67e029cabc28",
+                    "path": "<Keyboard>/escape",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "New action",
+                    "action": "Unpause",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
