@@ -5,13 +5,12 @@ public class TopDownCameraSystem : MonoBehaviour
     [Header("TARGET SETTINGS")]
     [SerializeField] private Transform player_target;
 
-    [Header("CAMERA SETTINGS")]
+    [Header("OFFSET SETTINGS")]
     [SerializeField] private Vector3 offSet = new Vector3(0f, 20f, -20f);
 
-    [Header("TOP-DOWN CAMERA SETTINGS")]
+    [Header("ANGLES SETTINGS")]
     [SerializeField] private float angleX = 50f;
     [SerializeField] private float angleY = 50f;
-    [SerializeField] private float pushCam = 0.35f; 
 
     private void Start()
     {
@@ -32,7 +31,7 @@ public class TopDownCameraSystem : MonoBehaviour
         transform.rotation = Quaternion.Euler(angleX, angleY, 0f);
     }
 
-    private void LateUpdate()
+    private void Update()
     {
         if (player_target == null){
         var player = GameObject.FindGameObjectWithTag("Player");
@@ -43,13 +42,10 @@ public class TopDownCameraSystem : MonoBehaviour
         return;
         }
 
-        // The camera CANT rotate -> isometric view.
         transform.rotation = Quaternion.Euler(angleX, angleY, 0f);
 
         // The camera desired position.
-        Vector3 cameraPosDesired = player_target.position + offSet + player_target.forward * pushCam;
-
-        // The camera need an smooth delay -> Vector.Lerp -> from the initial position to the desired position.
-        transform.position = Vector3.Lerp(transform.position, cameraPosDesired, Time.deltaTime);  
-    }
+        Vector3 cameraPosDesired = player_target.position + offSet + player_target.forward;
+        transform.position = cameraPosDesired;    
+        }
 }

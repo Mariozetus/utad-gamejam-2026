@@ -318,13 +318,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 259213917}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.42261827, y: 0, z: 0, w: 0.9063079}
-  m_LocalPosition: {x: 2.3, y: 17.1, z: -12.2}
+  m_LocalRotation: {x: 0.41968974, y: -0, z: -0, w: 0.90766764}
+  m_LocalPosition: {x: 3.5, y: 16.24, z: -10.74}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 559290044}
-  m_LocalEulerAnglesHint: {x: 50, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 49.63, y: 0, z: 0}
 --- !u!114 &259213921
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -382,10 +382,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TopDownCameraSystem
   player_target: {fileID: 1680698912}
-  offSet: {x: 0, y: 20, z: -20}
-  angleX: 50
+  offSet: {x: 0, y: 16.24, z: -10.74}
+  angleX: 49.63
   angleY: 0
-  pushCam: 0.35
 --- !u!1 &555053697
 GameObject:
   m_ObjectHideFlags: 0
@@ -726,7 +725,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: c170ec92ccbd0a34a866e00486a1f599, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -878,7 +877,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: e0ef75ea72efc0c4ca76ad477232719f, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
