@@ -1,354 +1,282 @@
-using System;
-using System.Collections.Generic;
-using UnityEngine;
+    using System;
+    using System.Collections.Generic;
+    using UnityEngine;
 
-
-public class OrgansManager : MonoBehaviour
-{
-    [Header("Tags")]
-    [SerializeField] private string minionTag = "Enemy";
-    [SerializeField] private string miniBossTag = "MiniBoss";
-    [SerializeField] private string bossTag = "Boss";
-
-    [Header("Horus Settings")]
-    [SerializeField] private float horusEyesCameraZoom = 1.5f;
-    [SerializeField, Range(0f, 1f)] private float horusBrainDodgeChance = 0.25f;
-    [SerializeField] private int horusStomachKillThreshold = 25;
-    [SerializeField] private float horusStomachSpeedBuff = 1.2f;
-    [SerializeField] private float horusStomachSpeedBuffMax = 2f;
-    [SerializeField] private float horusKidneysDuration = 2f;
-    [SerializeField] private float horusKidneysSpeedMultiplier = 2f;
-    [SerializeField] private int horusLungsExtraDash = 1;
-
-    [Header("Khnum Settings")]
-    [SerializeField] private float khnumEyesCameraZoom = 0.85f;
-    [SerializeField, Range(0f, 1f)] private float khnumEyesDoubleDamageChance = 0.5f;
-    [SerializeField, Range(0f, 1f)] private float khnumBrainMinionInstakillChance = 0.25f;
-    [SerializeField, Range(0f, 1f)] private float khnumBrainMiniBossInstakillChance = 0.001f;
-    [SerializeField, Range(0f, 1f)] private float khnumStomachHealPercent = 0.25f;
-    [SerializeField] private float khnumKidneysDuration = 2f;
-    [SerializeField] private float khnumKidneysAttackMultiplier = 2f;
-
-    [Header("Hapi Settings")]
-    [SerializeField] private float hapiEyesSlowTimeDuration = 3f;
-    [SerializeField, Range(0f, 1f)] private float hapiBrainTauntChance = 0.2f;
-    [SerializeField] private float hapiBrainTauntDuration = 2f;
-    [SerializeField] private float hapiBrainTauntCooldown = 10f;
-    [SerializeField] private int hapiStomachKillThreshold = 50;
-    [SerializeField] private float hapiKidneysDuration = 2f;
-    [SerializeField, Range(0f, 1f)] private float hapiKidneysHealToPercent = 0.75f;
-
-    public event Action ModifiersChanged;
-
-    // Health system listens:
-    public event Action<float> HealAmountRequested;          
-    public event Action HealToFullRequested;                 
-    public event Action<float, float> SpeedBuffRequested;   
-    public event Action<float, float> AttackBuffRequested;   
-
-    public event Action<GameObject> InstakillRequested;      
-    public event Action<GameObject, float> TauntRequested;   
-
-    // UI system listens:
-    public event Action ScreenWipeReady;                     // Hapi stomach
-
-    private readonly Dictionary<OrgansType, MiniBossType> _activeOrgans = new();
-
-    // Stomach
-    private int _stomachKillCount;
-    private float _currentSpeedMultiplier = 1f;
-    private bool _screenWipeReady;
-
-    // Hapi brain cooldown
-    private float _lastTauntTimeUnscaled = -999f;
-
-    public float CameraZoomMultiplier { get; private set; } = 1f;
-    public bool VignetteEnabled { get; private set; }
-
-
-    public float DodgeChance { get; private set; }            // Horus brain
-    public float DoubleDamageChance { get; private set; }     // Khnum eyes
-
-
-    public int ExtraDashCount { get; private set; }           // Horus lungs
-    public bool HasBullChargeDash { get; private set; }       // Khnum lungs
-    public bool HasWindWave { get; private set; }             // Hapi lungs
-    public bool HasSlowTimeAbility { get; private set; }      // Hapi eyes
-    public float SlowTimeDuration => hapiEyesSlowTimeDuration;
-
-    private void OnEnable()
+    public class OrgansManager : MonoBehaviour
     {
-        OrgansObject.PickedUp += OnOrganPickedUp;
+        [Header("Fallback Tags")]
+        [SerializeField] private string minionTag = "Enemy";
+        [SerializeField] private string miniBossTag = "MiniBoss";
+        [SerializeField] private string bossTag = "Boss";
 
-        PlayerEvents.EnemyKilled += OnEnemyKilled;
-        PlayerEvents.DamageDealt += OnDamageDealt;
+        [Header("Horus")]
+        [SerializeField] private float horusEyesCameraZoom = 1.5f;
+        [SerializeField, Range(0f, 1f)] private float horusBrainDodgeChance = 0.25f;
+        [SerializeField] private int horusStomachKillThreshold = 25;
+        [SerializeField] private float horusStomachSpeedBuff = 1.2f;
+        [SerializeField] private float horusStomachSpeedBuffMax = 2f;
+        [SerializeField] private float horusKidneysDuration = 2f;
+        [SerializeField] private float horusKidneysSpeedMultiplier = 2f;
+        [SerializeField] private int horusLungsExtraDash = 1;
 
-        PlayerEvents.OutgoingDamageModify += OnOutgoingDamageModify;
-        PlayerEvents.IncomingDamageModify += OnIncomingDamageModify;
-    }
+        [Header("Khnum")]
+        [SerializeField] private float khnumEyesCameraZoom = 0.85f;
+        [SerializeField, Range(0f, 1f)] private float khnumEyesDoubleDamageChance = 0.5f;
+        [SerializeField, Range(0f, 1f)] private float khnumBrainMinionInstakillChance = 0.25f;
+        [SerializeField, Range(0f, 1f)] private float khnumBrainMiniBossInstakillChance = 0.001f;
+        [SerializeField, Range(0f, 1f)] private float khnumStomachHealPercent = 0.25f;
+        [SerializeField] private float khnumKidneysDuration = 2f;
+        [SerializeField] private float khnumKidneysAttackMultiplier = 2f;
 
-    private void OnDisable()
-    {
-        OrgansObject.PickedUp -= OnOrganPickedUp;
+        [Header("Hapi")]
+        [SerializeField] private float hapiEyesSlowTimeDuration = 3f;
+        [SerializeField, Range(0f, 1f)] private float hapiBrainTauntChance = 0.2f;
+        [SerializeField] private float hapiBrainTauntDuration = 2f;
+        [SerializeField] private float hapiBrainTauntCooldown = 10f;
+        [SerializeField] private int hapiStomachKillThreshold = 50;
+        [SerializeField] private float hapiKidneysDuration = 2f;
+        [SerializeField, Range(0f, 1f)] private float hapiKidneysHealToPercent = 0.75f;
 
-        PlayerEvents.EnemyKilled -= OnEnemyKilled;
-        PlayerEvents.DamageDealt -= OnDamageDealt;
+        public event Action ModifiersChanged;
+        public event Action<float> HealAmountRequested;
+        public event Action HealToFullRequested;
+        public event Action<float, float> SpeedBuffRequested;  
+        public event Action ScreenWipeCharged;
+        public event Action<GameObject> InstakillRequested;
+        public event Action<GameObject, float> TauntRequested;
 
-        PlayerEvents.OutgoingDamageModify -= OnOutgoingDamageModify;
-        PlayerEvents.IncomingDamageModify -= OnIncomingDamageModify;
-    }
+        private readonly Dictionary<OrgansType, MiniBossType> _active = new();
 
-    private void OnOrganPickedUp(OrgansObject organ, GameObject interactor)
-    {
-        if (organ == null) return;
-        EquipOrgan(organ.OrgansType, organ.MiniBossType);
-    }
+        public float CameraZoomMultiplier { get; private set; } = 1f;
+        public bool VignetteEnabled { get; private set; }
+        public float DodgeChance { get; private set; }          // Horus brain
+        public float DoubleDamageChance { get; private set; }   // Khnum eyes
+        public int ExtraDashCount { get; private set; }         // Horus lungs
+        public bool HasSlowTimeAbility { get; private set; }    //· Hapi eyes
+        public float SlowTimeDuration => hapiEyesSlowTimeDuration;
 
-    public void EquipOrgan(OrgansType organType, MiniBossType bossType)
-    {
-        _activeOrgans[organType] = bossType;
+        private int _stomachKillCount = 0;
+        private float _stackedSpeedMult = 1f;
+        private bool _screenWipeReady = false;
+        private float _lastTauntUnscaled = -999f;
 
-        if (organType == OrgansType.Stomach)
+        private void OnEnable()
         {
-            _stomachKillCount = 0;
-            _screenWipeReady = false;
-            _currentSpeedMultiplier = 1f; 
+            OrgansObject.PickedUp += OnOrganPickedUp;
+
+            PlayerEvents.EnemyKilled += OnEnemyKilled;
+            PlayerEvents.DamageDealt += OnDamageDealt;
+
+            PlayerEvents.OutgoingDamageModify += OnOutgoingDamageModify;
+            PlayerEvents.IncomingDamageModify += OnIncomingDamageModify;
         }
 
-        RebuildModifiers();
-    }
-
-
-    public void ClearOrgan(OrgansType organType)
-    {
-        if (_activeOrgans.Remove(organType))
+        private void OnDisable()
         {
-            if (organType == OrgansType.Stomach)
+            OrgansObject.PickedUp -= OnOrganPickedUp;
+
+            PlayerEvents.EnemyKilled -= OnEnemyKilled;
+            PlayerEvents.DamageDealt -= OnDamageDealt;
+
+            PlayerEvents.OutgoingDamageModify -= OnOutgoingDamageModify;
+            PlayerEvents.IncomingDamageModify -= OnIncomingDamageModify;
+        }
+
+        private void OnOrganPickedUp(OrgansObject organ, GameObject interactor)
+        {
+            if (organ == null) return;
+            Equip(organ.OrgansType, organ.MiniBossType);
+        }
+
+        public void Equip(OrgansType slot, MiniBossType boss)
+        {
+            _active[slot] = boss;
+
+            if (slot == OrgansType.Stomach)
             {
                 _stomachKillCount = 0;
                 _screenWipeReady = false;
-                _currentSpeedMultiplier = 1f;
+                _stackedSpeedMult = 1f;
             }
 
-            RebuildModifiers();
+            Rebuild();
         }
-    }
 
-    private void RebuildModifiers()
-    {
-        CameraZoomMultiplier = 1f;
-        VignetteEnabled = false;
-
-        DodgeChance = 0f;
-        DoubleDamageChance = 0f;
-
-        ExtraDashCount = 0;
-        HasBullChargeDash = false;
-        HasWindWave = false;
-        HasSlowTimeAbility = false;
-
-        // Eyes
-        if (_activeOrgans.TryGetValue(OrgansType.Eyes, out var eyesBoss))
+        private void Rebuild()
         {
-            switch (eyesBoss)
-            {
-                case MiniBossType.Horus:
-                    CameraZoomMultiplier = horusEyesCameraZoom;
-                    break;
+            CameraZoomMultiplier = 1f;
+            VignetteEnabled = false;
+            DodgeChance = 0f;
+            DoubleDamageChance = 0f;
+            ExtraDashCount = 0;
+            HasSlowTimeAbility = false;
 
-                case MiniBossType.Khnum:
+            // Eyes
+            if (_active.TryGetValue(OrgansType.Eyes, out var eyes))
+            {
+                if (eyes == MiniBossType.Horus) CameraZoomMultiplier = horusEyesCameraZoom;
+                if (eyes == MiniBossType.Khnum)
+                {
                     CameraZoomMultiplier = khnumEyesCameraZoom;
                     VignetteEnabled = true;
                     DoubleDamageChance = khnumEyesDoubleDamageChance;
-                    break;
-
-                case MiniBossType.Hapi:
-                    HasSlowTimeAbility = true;
-                    break;
+                }
+                if (eyes == MiniBossType.Hapi) HasSlowTimeAbility = true;
             }
-        }
 
-        // Brain
-        if (_activeOrgans.TryGetValue(OrgansType.Brain, out var brainBoss))
-        {
-            if (brainBoss == MiniBossType.Horus)
-                DodgeChance = horusBrainDodgeChance;
-        }
-
-        // Lungs
-        if (_activeOrgans.TryGetValue(OrgansType.Lungs, out var lungsBoss))
-        {
-            switch (lungsBoss)
+            // Brain
+            if (_active.TryGetValue(OrgansType.Brain, out var brain))
             {
-                case MiniBossType.Horus:
-                    ExtraDashCount = horusLungsExtraDash;
-                    break;
-
-                case MiniBossType.Khnum:
-                    HasBullChargeDash = true;
-                    break;
-
-                case MiniBossType.Hapi:
-                    HasWindWave = true;
-                    break;
+                if (brain == MiniBossType.Horus) DodgeChance = horusBrainDodgeChance;
             }
+
+            // Lungs
+            if (_active.TryGetValue(OrgansType.Lungs, out var lungs))
+            {
+                if (lungs == MiniBossType.Horus) ExtraDashCount = horusLungsExtraDash;
+            }
+
+            ModifiersChanged?.Invoke();
         }
 
-        ModifiersChanged?.Invoke();
-    }
-
-    private void OnEnemyKilled(GameObject enemy)
-    {
-        if (!_activeOrgans.TryGetValue(OrgansType.Stomach, out var stomachBoss))
-            return;
-
-        if (stomachBoss == MiniBossType.Horus)
+        private void OnEnemyKilled(GameObject enemy)
         {
+            if (!_active.TryGetValue(OrgansType.Stomach, out var stomach))
+                return;
+
             _stomachKillCount++;
-            if (_stomachKillCount >= horusStomachKillThreshold)
+
+            if (stomach == MiniBossType.Horus)
             {
-                _stomachKillCount = 0;
-
-                HealToFullRequested?.Invoke();
-
-                _currentSpeedMultiplier = Mathf.Min(_currentSpeedMultiplier * horusStomachSpeedBuff, horusStomachSpeedBuffMax);
-                SpeedBuffRequested?.Invoke(_currentSpeedMultiplier, 0f);
-            }
-        }
-        else if (stomachBoss == MiniBossType.Hapi)
-        {
-            _stomachKillCount++;
-            if (_stomachKillCount >= hapiStomachKillThreshold)
-            {
-                _stomachKillCount = 0;
-                _screenWipeReady = true;
-                ScreenWipeReady?.Invoke();
-            }
-        }
-    }
-
-    private void OnDamageDealt(GameObject target, float damage)
-    {
-        // Khnum stomach
-        if (_activeOrgans.TryGetValue(OrgansType.Stomach, out var stomachBoss) && stomachBoss == MiniBossType.Khnum)
-        {
-            float heal = Mathf.Max(0f, damage) * khnumStomachHealPercent;
-            if (heal > 0f)
-                HealAmountRequested?.Invoke(heal);
-        }
-    }
-
-
-    private void OnOutgoingDamageModify(GameObject target, ref float damage)
-    {
-        if (damage <= 0f) return;
-
-        // Khnum eyes
-        if (_activeOrgans.TryGetValue(OrgansType.Eyes, out var eyesBoss) &&
-            eyesBoss == MiniBossType.Khnum &&
-            DoubleDamageChance > 0f &&
-            UnityEngine.Random.value <= DoubleDamageChance)
-        {
-            damage *= 2f;
-        }
-
-        // Khnum brain
-        if (_activeOrgans.TryGetValue(OrgansType.Brain, out var brainBoss) &&
-            brainBoss == MiniBossType.Khnum &&
-            target != null)
-        {
-            if (target.CompareTag(minionTag))
-            {
-                if (UnityEngine.Random.value <= khnumBrainMinionInstakillChance)
+                if (_stomachKillCount >= horusStomachKillThreshold)
                 {
-                    InstakillRequested?.Invoke(target);
-                    damage = float.MaxValue;
+                    _stomachKillCount = 0;
+                    HealToFullRequested?.Invoke();
+
+                    _stackedSpeedMult = Mathf.Min(_stackedSpeedMult * horusStomachSpeedBuff, horusStomachSpeedBuffMax);
+                    SpeedBuffRequested?.Invoke(_stackedSpeedMult, 0f);
                 }
             }
-            else if (target.CompareTag(miniBossTag))
+            else if (stomach == MiniBossType.Hapi)
             {
-                if (UnityEngine.Random.value <= khnumBrainMiniBossInstakillChance)
+                if (_stomachKillCount >= hapiStomachKillThreshold)
                 {
-                    InstakillRequested?.Invoke(target);
-                    damage = float.MaxValue;
+                    _stomachKillCount = 0;
+                    _screenWipeReady = true;
+                    ScreenWipeCharged?.Invoke();
                 }
             }
         }
 
-        // Hapi brain
-        if (_activeOrgans.TryGetValue(OrgansType.Brain, out var brainBoss2) &&
-            brainBoss2 == MiniBossType.Hapi &&
-            target != null)
+        private void OnDamageDealt(GameObject target, float damage)
         {
-            float now = Time.unscaledTime;
-            if (now >= _lastTauntTimeUnscaled + hapiBrainTauntCooldown &&
-                UnityEngine.Random.value <= hapiBrainTauntChance)
+            // Khnum stomach lifesteal
+            if (_active.TryGetValue(OrgansType.Stomach, out var stomach) && stomach == MiniBossType.Khnum)
             {
-                _lastTauntTimeUnscaled = now;
-                TauntRequested?.Invoke(target, hapiBrainTauntDuration);
+                float heal = Mathf.Max(0f, damage) * khnumStomachHealPercent;
+                if (heal > 0f) HealAmountRequested?.Invoke(heal);
             }
         }
-    }
 
-    private void OnIncomingDamageModify(GameObject source, ref float damage)
-    {
-        if (damage <= 0f) return;
-
-        // Horus brain
-        if (_activeOrgans.TryGetValue(OrgansType.Brain, out var brainBoss) &&
-            brainBoss == MiniBossType.Horus &&
-            DodgeChance > 0f &&
-            UnityEngine.Random.value <= DodgeChance)
+        private void OnOutgoingDamageModify(GameObject target, ref float damage)
         {
-            damage = 0f;
+            if (damage <= 0f) return;
+
+            // Khnum eyes: 50% double damage
+            if (_active.TryGetValue(OrgansType.Eyes, out var eyes) && eyes == MiniBossType.Khnum)
+            {
+                if (UnityEngine.Random.value <= DoubleDamageChance) damage *= 2f;
+            }
+
+            // Khnum brain: instakill
+            if (_active.TryGetValue(OrgansType.Brain, out var brain) && brain == MiniBossType.Khnum && target != null)
+            {
+                if (IsMinion(target))
+                {
+                    if (UnityEngine.Random.value <= khnumBrainMinionInstakillChance)
+                    {
+                        InstakillRequested?.Invoke(target);
+                        damage = float.MaxValue;
+                    }
+                }
+                else if (IsMiniBoss(target))
+                {
+                    if (UnityEngine.Random.value <= khnumBrainMiniBossInstakillChance)
+                    {
+                        InstakillRequested?.Invoke(target);
+                        damage = float.MaxValue;
+                    }
+                }
+            }
+
+            // Hapi brain: taunt
+            if (_active.TryGetValue(OrgansType.Brain, out var brain2) && brain2 == MiniBossType.Hapi && target != null)
+            {
+                float now = Time.unscaledTime;
+                if (now >= _lastTauntUnscaled + hapiBrainTauntCooldown)
+                {
+                    if (UnityEngine.Random.value <= hapiBrainTauntChance)
+                    {
+                        _lastTauntUnscaled = now;
+                        TauntRequested?.Invoke(target, hapiBrainTauntDuration);
+                    }
+                }
+            }
         }
 
-    }
+        private void OnIncomingDamageModify(GameObject source, ref float damage)
+        {
+            if (damage <= 0f) return;
 
+            // Horus brain: 25% dodge
+            if (_active.TryGetValue(OrgansType.Brain, out var brain) && brain == MiniBossType.Horus)
+            {
+                if (UnityEngine.Random.value <= DodgeChance) damage = 0f;
+            }
 
-    public bool IsScreenWipeReady() => _screenWipeReady;
+        }
 
-    public void ConsumeScreenWipe()
-    {
-        _screenWipeReady = false;
-    }
+        public bool IsScreenWipeReady() => _screenWipeReady;
+        public void ConsumeScreenWipe() => _screenWipeReady = false;
 
- 
-    public bool TryActivateKidneys(
-        out float duration,
-        out float speedMultiplier,
-        out float attackMultiplier,
-        out float healToPercent)
-    {
-        duration = 0f;
-        speedMultiplier = 1f;
-        attackMultiplier = 1f;
-        healToPercent = 0f;
+        public bool TryActivateKidneys(out float duration, out float speedMult, out float attackMult, out float healToPercent)
+        {
+            duration = 0f; speedMult = 1f; attackMult = 1f; healToPercent = 0f;
 
-        if (!_activeOrgans.TryGetValue(OrgansType.Kidneys, out var kidneysBoss))
+            if (!_active.TryGetValue(OrgansType.Kidneys, out var kidneys))
+                return false;
+
+            if (kidneys == MiniBossType.Horus)
+            {
+                duration = horusKidneysDuration;
+                speedMult = horusKidneysSpeedMultiplier;
+                return true;
+            }
+            if (kidneys == MiniBossType.Khnum)
+            {
+                duration = khnumKidneysDuration;
+                attackMult = khnumKidneysAttackMultiplier;
+                return true;
+            }
+            if (kidneys == MiniBossType.Hapi)
+            {
+                duration = hapiKidneysDuration;
+                healToPercent = hapiKidneysHealToPercent;
+                return true;
+            }
             return false;
-
-        if (kidneysBoss == MiniBossType.Horus)
+        }
+        public bool TryGetLiver(out MiniBossType bossType)
         {
-            duration = horusKidneysDuration;
-            speedMultiplier = horusKidneysSpeedMultiplier;
+            bossType = default;
+            if (!_active.TryGetValue(OrgansType.Liver, out var liverBoss))
+                return false;
+
+            bossType = liverBoss;
             return true;
         }
 
-        if (kidneysBoss == MiniBossType.Khnum)
-        {
-            duration = khnumKidneysDuration;
-            attackMultiplier = khnumKidneysAttackMultiplier;
-            return true;
-        }
 
-        if (kidneysBoss == MiniBossType.Hapi)
-        {
-            duration = hapiKidneysDuration;
-            healToPercent = hapiKidneysHealToPercent;
-            return true;
-        }
-
-        return false;
+        private bool IsMinion(GameObject go) => go.CompareTag(minionTag);
+        private bool IsMiniBoss(GameObject go) => go.CompareTag(miniBossTag);
     }
-}

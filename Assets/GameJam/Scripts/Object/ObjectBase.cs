@@ -11,7 +11,7 @@ public class ObjectBase : MonoBehaviour
     [SerializeField] private string autoTriggerChildName = "_InteractTrigger";
 
     [Header("SFX")]
-    [SerializeField] private bool playDoorSfx = false;
+    [SerializeField] private bool playSfx = false;
     [SerializeField] private string sfxOpen = "Item_Pickup";
 
     private Transform _autoTriggerTf;
@@ -74,7 +74,6 @@ public class ObjectBase : MonoBehaviour
     {
         if (other == null) return;
         if (!other.CompareTag("Player")) return;
-
         ProximityDetector detector = other.GetComponentInChildren<ProximityDetector>();
         if (detector != null)
             detector.Register(this);
