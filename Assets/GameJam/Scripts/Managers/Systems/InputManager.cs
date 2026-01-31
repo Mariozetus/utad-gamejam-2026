@@ -47,6 +47,7 @@ public class InputManager : MonoBehaviour
         _inputActions.Player.Interact.started += OnInteractStarted;
         _inputActions.Player.Interact.canceled += OnInteractCanceled;
         _inputActions.Player.Hit.started += OnHitStarted;
+        _inputActions.Player.Hit.performed += OnHitPerformed;
         _inputActions.Player.Hit.canceled += OnHitCanceled;
         EnablePlayerInputs();
     }
@@ -66,6 +67,7 @@ public class InputManager : MonoBehaviour
         _inputActions.UI.Space.performed -= OnUiSpace;
         _inputActions.UI.Tab.performed -= OnUiTab;
         _inputActions.Player.Hit.started -= OnHitStarted;
+        _inputActions.Player.Hit.performed -= OnHitPerformed;
         _inputActions.Player.Hit.canceled -= OnHitCanceled;
     }
 
@@ -151,6 +153,7 @@ public class InputManager : MonoBehaviour
     private bool _isAttacking = false;
     private void OnHitStarted(InputAction.CallbackContext ctx)
     {
+        Logger.Log("Hit started", LogType.System);
         if (!_isAttacking)
         {
             _isAttacking = true;
@@ -159,6 +162,12 @@ public class InputManager : MonoBehaviour
             }
         }
     }
+
+    private void OnHitPerformed(InputAction.CallbackContext context)
+    {
+        Logger.Log("Hit performed", LogType.System);
+    }
+
     private void OnHitCanceled(InputAction.CallbackContext ctx)
     {
         _isAttacking = false;

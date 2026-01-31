@@ -53,6 +53,14 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void ChangeGameLevel(GameLevel gameLevel)
+    {
+        AudioManager.Instance.StopAllSounds();
+        SceneController.Instance.LoadScene(gameLevel.Scene);
+        CurrentLevel = gameLevel;
+        AudioManager.Instance.PlayMusic(gameLevel.LevelMusic);
+    }
+
     private void AddLevelsToDictionary(GameLevel[] gameLevels)
     {
         foreach(GameLevel level in gameLevels)
@@ -67,11 +75,5 @@ public class GameManager : MonoBehaviour
     public void HandlePlayerDeath()
     {
         throw new System.NotImplementedException();
-    }
-
-    public void ChangeGameLevel(GameLevel gameLevel)
-    {
-        SceneController.Instance.LoadScene(gameLevel.Scene);
-        CurrentLevel = gameLevel;
     }
 }
