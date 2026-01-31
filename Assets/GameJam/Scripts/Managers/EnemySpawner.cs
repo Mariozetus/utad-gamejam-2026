@@ -5,6 +5,7 @@ using System;
 
 public class EnemySpawner : MonoBehaviour
 {
+    [SerializeField] private List<EnemyStats> enemyTypes;
     [SerializeField] private List<GameObject> spawnPoints;
     [SerializeField] private float spawnRadius = 5f;
     private List<EnemyWave> _enemyWaves = new List<EnemyWave>();
@@ -15,7 +16,7 @@ public class EnemySpawner : MonoBehaviour
     private bool _enabled = true;
     private bool _startNextWave = false;
 
-    public void SpawnEnemy(GameObject enemyPrefab)
+    public void SpawnEnemy(Enemy enemy)
     {
         if (spawnPoints.Count == 0) return;
 
@@ -25,7 +26,7 @@ public class EnemySpawner : MonoBehaviour
         Vector3 spawnPosition = spawnPoint.transform.position + UnityEngine.Random.insideUnitSphere * spawnRadius;
         spawnPosition.y = spawnPoint.transform.position.y; 
 
-        Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
+        Instantiate(enemy.gameObject, spawnPosition, Quaternion.identity);
     }
 
     public void SetEnemyWaves(EnemyWave[] waves)
@@ -112,10 +113,19 @@ public class EnemySpawner : MonoBehaviour
         yield return new WaitForSeconds(_enemyWaves[_currentWaveIndex].GracePeriodBeforeWave);
         
         Logger.Log("Starting next enemy wave", LogType.SpawnSystem, this);
+        BuffEnemyStats();
         _enemiesSpawnedInCurrentWave = 0;
         _timeSinceWaveStart = Time.time;
         _timeSinceLastSpawn = Time.time - _enemyWaves[_currentWaveIndex].SpawnInterval; 
         
         _startNextWave = true;
+    }
+
+    private void BuffEnemyStats()
+    {
+        foreach(EnemyStats stats in enemyTypes)
+        {
+            stats.BuffStats();
+        }
     }
 }
