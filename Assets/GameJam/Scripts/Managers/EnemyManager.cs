@@ -6,10 +6,8 @@ using System.Collections;
 public class EnemyManager : MonoBehaviour
 {
     public static EnemyManager Instance;
-    [SerializeField] private List<LevelWavesDictionary> levelWaves;
     private Dictionary<GameLevel, EnemyWave[]> _levelWavesDictionary = new Dictionary<GameLevel, EnemyWave[]>();
 
-    private Coroutine _gracePeriodCoroutine;
     private EnemySpawner _currentSpawner;
 
     void Awake()
@@ -26,7 +24,9 @@ public class EnemyManager : MonoBehaviour
             return;
         }
 
-        foreach(LevelWavesDictionary entry in levelWaves)
+        GameWaves gameWaves = Resources.Load<GameWaves>("GameWaves");
+
+        foreach(LevelWavesDictionary entry in gameWaves.levelWaves)
         {
             if(!_levelWavesDictionary.ContainsKey(entry.key))
             {
@@ -34,19 +34,21 @@ public class EnemyManager : MonoBehaviour
             }
         }
 
+        OnSceneLoaded();
         SceneController.Instance.OnSceneLoaded += OnSceneLoaded;
     }
 
     private IEnumerator HandleGracePeriod(float gracePeriodDuration)
     {
         yield return new WaitForSeconds(gracePeriodDuration);
-        _gracePeriodCoroutine = null;
+        Logger.Log("Grace period ended, starting enemy waves", LogType.SpawnSystem, this);
         _currentSpawner.SetEnemyWaves(_levelWavesDictionary[GameManager.Instance.CurrentLevel]);
     }
 
 
     private void OnSceneLoaded()
     {
+        Logger.Log("EnemyManager detected scene load", LogType.SpawnSystem, this);
         GameLevel currentLevel = GameManager.Instance.CurrentLevel;
         if(_levelWavesDictionary.ContainsKey(currentLevel))
         {
@@ -58,14 +60,4 @@ public class EnemyManager : MonoBehaviour
     {
         _currentSpawner = spawner;
     }
-}
-
-[Serializable]
-public class LevelWavesDictionary
-{
-    public GameLevel gameLevel;
-    public EnemyWave[] waves;
-
-    public GameLevel key { get => gameLevel; private set{} }
-    public EnemyWave[] value { get => waves; private set{} }
 }

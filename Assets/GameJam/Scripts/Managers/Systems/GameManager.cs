@@ -46,7 +46,6 @@ public class GameManager : MonoBehaviour
     private void CheckActualLevel()
     {
         int buildIndex = UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex;
-        Logger.Log($"Current Scene Build Index: {buildIndex}", LogType.System);
         if(gameLevelsDictionary.ContainsKey(buildIndex))
         {
             CurrentLevel = gameLevelsDictionary[buildIndex];
@@ -59,7 +58,6 @@ public class GameManager : MonoBehaviour
         {
             if (!gameLevelsDictionary.ContainsKey(level.Scene.SceneBuildIndex))
             {
-                Logger.Log($"Adding level ( {level.Name}, {level.Scene.SceneBuildIndex} ) to dictionary", LogType.System);
                 gameLevelsDictionary.Add(level.Scene.SceneBuildIndex, level);
             }
         }

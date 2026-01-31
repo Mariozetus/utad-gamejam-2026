@@ -22,5 +22,6 @@ public enum LogType
     UI = 1 << 4,
     Audio = 1 << 5,
     Environment = 1 << 6,
+    SpawnSystem = 1 << 7,
     All = ~0
 }

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28d7ea776e956754b885c3d178767ce5, type: 3}
   m_Name: Level3
   m_EditorClassIdentifier: Assembly-CSharp::SceneReference
-  sceneAsset: {fileID: 102900000, guid: 0b9fa2dacce1c624ab563511b15ae239, type: 3}
+  sceneAsset: {fileID: 102900000, guid: 5a2a03f6f6bf20c4b9b8102057acded5, type: 3}
   sceneName: Level3
   scenePath: Assets/GameJam/Scenes/Levels/Level3.unity
   sceneBuildIndex: -1

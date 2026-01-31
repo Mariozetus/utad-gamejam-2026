@@ -14,5 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameLevel
   levelName: Level 1
   sceneReference: {fileID: 11400000, guid: ace0a0dbeee7f5240b535ae202fc9908, type: 2}
-  enemySpawner: {fileID: 0}
-  startGracePeriod: 30
+  startGracePeriod: 5
