@@ -4,6 +4,7 @@ using System;
 
 public class PlayerController : MonoBehaviour
 {
+    public static PlayerController Instance { get; private set; }
     [Header("SPEED SETTINGS")]
     [Range(0f, 20f)] [SerializeField] private float normalMovementSpeed = 5f;
 
@@ -16,8 +17,6 @@ public class PlayerController : MonoBehaviour
     private Camera _camera;
     private Animator _animator;
     private float _currentSpeed;
-    private bool _isRunning = false;
-    private bool _wasWalking = false;
     private static readonly int Speed = Animator.StringToHash("Speed");
 
     // Pause screen.
@@ -30,6 +29,7 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
+        Instance = this;
         _characterController = GetComponent<CharacterController>();
         _animator = GetComponentInChildren<Animator>();
         _camera = Camera.main;
@@ -154,5 +154,10 @@ public class PlayerController : MonoBehaviour
             _movementSpeedMultiplier = 1f;
              _movementSpeedMultiplierEndUnscaled = -1f;
          }
+    }
+
+    public void Attack()
+    {
+        Logger.Warning("E");
     }
 }

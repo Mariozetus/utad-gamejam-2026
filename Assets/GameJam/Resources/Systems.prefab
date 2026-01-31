@@ -243,7 +243,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &5933248411635042014
 Transform:
   m_ObjectHideFlags: 0
@@ -271,19 +271,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90e528f5285f364448fb70af561a1c39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyManager
-  levelWaves:
-  - gameLevel: {fileID: 11400000, guid: 056842b6f07b9974c9c6a39829f4dfa1, type: 2}
-    waves:
-    - EnemyPrefabs:
-      - {fileID: 5176927686958939344, guid: bdd0799b040dfaf4c91116ef0ad8e798, type: 3}
-      - {fileID: 338330976941310201, guid: 736a21ebaea4e25489eeca1afbc155b1, type: 3}
-      - {fileID: 6386039957516074044, guid: 3218adca5e0ce454ea1ae09b1aa6be66, type: 3}
-      EnemiesPerSecond: 2
-      WaveDuration: 5
-      GracePeriodBeforeWave: 5
-    - EnemyPrefabs:
-      - {fileID: 5176927686958939344, guid: bdd0799b040dfaf4c91116ef0ad8e798, type: 3}
-      - {fileID: 338330976941310201, guid: 736a21ebaea4e25489eeca1afbc155b1, type: 3}
-      EnemiesPerSecond: 2
-      WaveDuration: 3
-      GracePeriodBeforeWave: 5

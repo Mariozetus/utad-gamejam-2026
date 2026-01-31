@@ -5,8 +5,6 @@ using UnityEngine.InputSystem;
 
 public class InputManager : MonoBehaviour
 {
-    
-    
     public static InputManager Instance { get; private set; }
 
     private bool _isInteractPressed;
@@ -48,6 +46,8 @@ public class InputManager : MonoBehaviour
         _inputActions.UI.Tab.performed += OnUnpausePerformed;
         _inputActions.Player.Interact.started += OnInteractStarted;
         _inputActions.Player.Interact.canceled += OnInteractCanceled;
+        _inputActions.Player.Hit.started += OnHitStarted;
+        _inputActions.Player.Hit.canceled += OnHitCanceled;
         EnablePlayerInputs();
     }
 
@@ -65,6 +65,8 @@ public class InputManager : MonoBehaviour
         _inputActions.UI.Enter.performed -= OnUiEnter;
         _inputActions.UI.Space.performed -= OnUiSpace;
         _inputActions.UI.Tab.performed -= OnUiTab;
+        _inputActions.Player.Hit.started -= OnHitStarted;
+        _inputActions.Player.Hit.canceled -= OnHitCanceled;
     }
 
     private void OnUnpausePerformed(UnityEngine.InputSystem.InputAction.CallbackContext context)
@@ -146,4 +148,19 @@ public class InputManager : MonoBehaviour
         _inputActions.UI.Disable();
     }
 
+    private bool _isAttacking = false;
+    private void OnHitStarted(InputAction.CallbackContext ctx)
+    {
+        if (!_isAttacking)
+        {
+            _isAttacking = true;
+            if (PlayerController.Instance != null){
+                PlayerController.Instance.Attack();
+            }
+        }
+    }
+    private void OnHitCanceled(InputAction.CallbackContext ctx)
+    {
+        _isAttacking = false;
+    }
 }
