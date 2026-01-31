@@ -7409,6 +7409,8 @@ MonoBehaviour:
   hapiStomachKillThreshold: 50
   hapiKidneysDuration: 2
   hapiKidneysHealToPercent: 0.75
+  hapiScreenWipeMiniBossHpFloor: 0.5
+  hapiScreenWipeBossHpFloor: 0.75
 --- !u!114 &1931249395
 MonoBehaviour:
   m_ObjectHideFlags: 0
