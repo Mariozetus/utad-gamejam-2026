@@ -12,4 +12,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4ba5d726f2ada24d9b94a2a4eb0fde1, type: 3}
   m_Name: GameWaves
   m_EditorClassIdentifier: Assembly-CSharp::GameWaves
-  levelWaves: []
+  levelWaves:
+  - gameLevel: {fileID: 11400000, guid: 056842b6f07b9974c9c6a39829f4dfa1, type: 2}
+    waves:
+    - enemySpawnData: []
+      EnemiesPerSecond: 0
+      WaveDuration: 0
+      GracePeriodBeforeWave: 0
+    - enemySpawnData: []
+      EnemiesPerSecond: 0
+      WaveDuration: 0
+      GracePeriodBeforeWave: 0
+    - enemySpawnData:
+      - enemyPrefab: {fileID: 0}
+        spawnChance: 0.28038916
+      - enemyPrefab: {fileID: 0}
+        spawnChance: 0.7196108
+      EnemiesPerSecond: 0
+      WaveDuration: 0
+      GracePeriodBeforeWave: 0
