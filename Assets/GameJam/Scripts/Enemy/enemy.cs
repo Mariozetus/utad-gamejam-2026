@@ -1,16 +1,23 @@
+using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 
 public class enemy : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public int health;
+    public Transform attackpoint;
+    public float attackrange = 0.5f;
+    public LayerMask playerLayer;
+    public float startShotCoolDown;
+    public float shotCoolDown;
+
+    private void Start()
     {
-        
+        shotCoolDown = startShotCoolDown;
     }
 
-    // Update is called once per frame
-    void Update()
+    void attack()
     {
-        
+
     }
+
 }
