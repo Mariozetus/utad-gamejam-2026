@@ -6,6 +6,33 @@ public class StatusUi : MonoBehaviour
 {
     [SerializeField] private GameObject textPrefab;
     [SerializeField] private Canvas canvas;
+
+    private void OnEnable()
+    {
+        Health.Damaged += OnDamaged;
+        Health.Healed += OnHealed;
+    }
+
+    private void OnDisable()
+    {
+        Health.Damaged -= OnDamaged;
+        Health.Healed -= OnHealed;
+    }
+
+    private void OnDamaged(Health health, float amount)
+    {
+        if (health == null) return;
+        int value = Mathf.Max(1, Mathf.RoundToInt(amount));
+        ShowDamage(value, health.transform);
+    }
+
+    private void OnHealed(Health health, float amount)
+    {
+        if (health == null) return;
+        int value = Mathf.Max(1, Mathf.RoundToInt(amount));
+        ShowHealth(value, health.transform);
+    }
+
     private IEnumerator textdestroction(GameObject texto)
     {
         yield return new WaitForSeconds(1f);

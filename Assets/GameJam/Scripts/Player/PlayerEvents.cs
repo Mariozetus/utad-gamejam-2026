@@ -5,7 +5,7 @@ public static class PlayerEvents
 {
     public static event Action<GameObject> EnemyKilled;
     public static event Action<GameObject, float> DamageDealt; 
-    public static event Action<float> DamageTaken;            
+    public static event Action<GameObject, float> DamageTaken; 
     public static event Action DashUsed;
 
     public delegate void OutgoingDamageModifyHandler(GameObject target, ref float damage);
@@ -28,23 +28,8 @@ public static class PlayerEvents
         return Mathf.Max(0f, dmg);
     }
 
-    public static void RaiseEnemyKilled(GameObject enemy)
-    {
-        EnemyKilled?.Invoke(enemy);
-    }
-
-    public static void RaiseDamageDealt(GameObject target, float amount)
-    {
-        DamageDealt?.Invoke(target, amount);
-    }
-
-    public static void RaiseDamageTaken(float amount)
-    {
-        DamageTaken?.Invoke(amount);
-    }
-
-    public static void RaiseDashUsed()
-    {
-        DashUsed?.Invoke();
-    }
+    public static void RaiseEnemyKilled(GameObject enemy) => EnemyKilled?.Invoke(enemy);
+    public static void RaiseDamageDealt(GameObject target, float amount) => DamageDealt?.Invoke(target, amount);
+    public static void RaiseDamageTaken(GameObject source, float amount) => DamageTaken?.Invoke(source, amount);
+    public static void RaiseDashUsed() => DashUsed?.Invoke();
 }

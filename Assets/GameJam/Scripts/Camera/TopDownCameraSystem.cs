@@ -12,8 +12,44 @@ public class TopDownCameraSystem : MonoBehaviour
     [SerializeField] private float angleX = 50f;
     [SerializeField] private float angleY = 50f;
 
+    [Header("ORGANS")]
+    [SerializeField] private OrgansManager organsManager; 
+
+    [Header("Smoothing")]
+    [SerializeField] private bool smoothFollow = true;
+    [SerializeField] private float followLerp = 12f;
+
+    private Vector3 _baseOffset;
+    private bool _triedFindPlayer;
+
+    private void Awake()
+    {
+        _baseOffset = offSet;
+    }
+
     private void Start()
     {
+        TryBindPlayerOnce();
+        ApplyRotation();
+    }
+
+    private void LateUpdate()
+    {
+        if (player_target == null)
+        {
+            TryBindPlayerOnce();
+            if (player_target == null) return;
+        }
+
+        ApplyRotation();
+        FollowPlayer();
+    }
+
+    private void TryBindPlayerOnce()
+    {
+        if (_triedFindPlayer) return;
+        _triedFindPlayer = true;
+
         if (player_target == null)
         {
             var player = GameObject.FindGameObjectWithTag("Player");
@@ -21,31 +57,44 @@ public class TopDownCameraSystem : MonoBehaviour
             {
                 player_target = player.transform;
             }
-            else
-            {
-                return;
-            }
         }
 
-        // Top-Down angle -> 
+        if (player_target != null && organsManager == null)
+        {
+            organsManager = player_target.GetComponent<OrgansManager>();
+        }
+    }
+
+    private void ApplyRotation()
+    {
         transform.rotation = Quaternion.Euler(angleX, angleY, 0f);
     }
 
-    private void Update()
+    private void FollowPlayer()
     {
-        if (player_target == null){
-        var player = GameObject.FindGameObjectWithTag("Player");
-        if(player == null)
+        float zoomMult = 1f;
+        if (organsManager != null)
+            zoomMult = Mathf.Clamp(organsManager.CameraZoomMultiplier, 0.5f, 3f);
+
+        Vector3 offsetNow = _baseOffset * zoomMult;
+
+        Vector3 desiredPos = player_target.position + offsetNow + player_target.forward;
+
+        if (smoothFollow)
         {
-            player_target = player.transform;
+            float t = 1f - Mathf.Exp(-followLerp * Time.deltaTime);
+            transform.position = Vector3.Lerp(transform.position, desiredPos, t);
         }
-        return;
+        else
+        {
+            transform.position = desiredPos;
         }
+    }
 
-        transform.rotation = Quaternion.Euler(angleX, angleY, 0f);
-
-        // The camera desired position.
-        Vector3 cameraPosDesired = player_target.position + offSet + player_target.forward;
-        transform.position = cameraPosDesired;    
-        }
+    public void SetTarget(Transform target)
+    {
+        player_target = target;
+        organsManager = target != null ? target.GetComponent<OrgansManager>() : null;
+        _triedFindPlayer = true;
+    }
 }

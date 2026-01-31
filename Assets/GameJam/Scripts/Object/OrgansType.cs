@@ -6,8 +6,10 @@ public enum OrgansType
     Brain,
     Stomach,
     Kidneys,
-    Lungs
+    Lungs,
+    Liver
 }
+
 
 public enum MiniBossType
 {
