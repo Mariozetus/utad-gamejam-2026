@@ -9,6 +9,7 @@ public class EnemyFollow : MonoBehaviour
     void Start()
     {
         _agent = GetComponent<NavMeshAgent>();
+        _agent.speed = GetComponent<Enemy>().EnemyStats.MoveSpeed;
     }
     
     void Update()
@@ -16,6 +17,7 @@ public class EnemyFollow : MonoBehaviour
         if (player != null)
         {
             _agent.SetDestination(player.position);
+
         }
         
     }

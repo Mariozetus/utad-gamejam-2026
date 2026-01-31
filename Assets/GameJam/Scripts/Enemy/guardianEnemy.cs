@@ -1,12 +1,16 @@
 using UnityEngine;
 
-public class RangedEnemy : Enemy
+public class guardianEnemy : Enemy
 {
     [SerializeField] protected GameObject bulletprefab;
-    [SerializeField] protected float speed; 
+    [SerializeField] protected float speed;
+    [SerializeField] protected float distance;
+    [SerializeField] protected float meleeRange;
+    [SerializeField] protected float rangedRange;
 
     private void Update()
     {
+        // distance = Vector3.Distance(transform.position);
         RaycastHit hit;
         if (shotCoolDown <= 0)
         {
@@ -28,6 +32,4 @@ public class RangedEnemy : Enemy
         bullet.GetComponent<Rigidbody>().linearVelocity = attackpoint.forward * speed;
         Logger.Log("he disparado");
     }
-
-   
 }
