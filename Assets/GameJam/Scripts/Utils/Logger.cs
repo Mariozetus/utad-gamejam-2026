@@ -99,4 +99,3 @@ public static class Logger
     private enum LogLevel { Log, Warning, Error }
 }
 
-
