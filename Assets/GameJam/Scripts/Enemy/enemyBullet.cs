@@ -8,8 +8,10 @@ public class enemyBullet : MonoBehaviour
     {
         Destroy(gameObject, life);
     }
-    private void OnCollisionEnter(Collision collision)
+    
+    private void OnTriggerEnter(Collider other)
     {
-        Destroy(gameObject);
+        if (other.gameObject.CompareTag("Player"))
+            Destroy(gameObject);
     }
 }

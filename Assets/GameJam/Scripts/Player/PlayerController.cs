@@ -32,7 +32,7 @@ public class PlayerController : MonoBehaviour
         Instance = this;
         if (stats == null) stats = GetComponent<CombatStats>();
 
-        GameManager.Instance:RegisterPlayer(this);
+        GameManager.Instance.RegisterPlayer(this);
     }
 
     private void Start()
