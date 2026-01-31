@@ -4,6 +4,7 @@ using UnityEngine;
 public class EnemyStats : ScriptableObject
 {
     [SerializeField] private string enemyName;
+    [SerializeField] private bool isBoss;
     [SerializeField] private int _moveSpeed;
     [SerializeField] private int _maxHealth;
     [SerializeField] private int _damage;
@@ -48,4 +49,5 @@ public class EnemyStats : ScriptableObject
     public int MoveSpeed { get => _moveSpeed; private set{} }
     public int MaxHealth { get => _maxHealth; private set{} }
     public int Damage { get => _damage; private set{} }
+    public bool IsBoss { get => isBoss; private set{} }
 }

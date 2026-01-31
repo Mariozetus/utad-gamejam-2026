@@ -8,11 +8,10 @@ public class InputManager : MonoBehaviour
     public static InputManager Instance { get; private set; }
 
     private bool _isInteractPressed;
-    
+    private bool _isHeld = false;
     private PlayerInputActions _inputActions;
-    public Action PausePressed, UnpausePressed, InteractPressed, InteractCanceled;
+    public Action PausePressed, UnpausePressed, InteractPressed, InteractCanceled, HitPerformed, HitCanceled;
 
-    
     public Action UiEscPressed;
     public Action UiEnterPressed;
     public Action UiSpacePressed;
@@ -48,6 +47,8 @@ public class InputManager : MonoBehaviour
         _inputActions.Player.Interact.canceled += OnInteractCanceled;
         _inputActions.Player.Hit.started += OnHitStarted;
         _inputActions.Player.Hit.canceled += OnHitCanceled;
+        _inputActions.Player.Hit.performed += OnHitPerformed;
+
         EnablePlayerInputs();
     }
 
@@ -67,6 +68,8 @@ public class InputManager : MonoBehaviour
         _inputActions.UI.Tab.performed -= OnUiTab;
         _inputActions.Player.Hit.started -= OnHitStarted;
         _inputActions.Player.Hit.canceled -= OnHitCanceled;
+        _inputActions.Player.Hit.performed -= OnHitPerformed;
+
     }
 
     private void OnUnpausePerformed(UnityEngine.InputSystem.InputAction.CallbackContext context)
@@ -159,8 +162,20 @@ public class InputManager : MonoBehaviour
             }
         }
     }
-    private void OnHitCanceled(InputAction.CallbackContext ctx)
+    private void OnHitPerformed(InputAction.CallbackContext context)
+    {
+        Logger.Log("Hit performed", LogType.System);
+        _isHeld = true;
+        HitPerformed?.Invoke();
+    }
+
+    public void OnHitCanceled(InputAction.CallbackContext ctx)
     {
         _isAttacking = false;
+        if(!_isHeld){
+            HitCanceled?.Invoke();
+            _isHeld = false;
+        }
+        Logger.Log("canceled", LogType.System);
     }
 }

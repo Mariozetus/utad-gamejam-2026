@@ -2,51 +2,42 @@ using UnityEngine;
 
 public class Health : MonoBehaviour
 {
-
     public static event System.Action<Health, float> Damaged;
     public static event System.Action<Health, float> Healed;
+
     [Header("Liver Passive Regen")]
     [SerializeField] private float liverRegenPercentPerSecond = 0.05f;
 
-    
     [SerializeField] private bool isPlayer = false;
     [SerializeField] private float maxHealth = 100f;
     [SerializeField] private float currentHealth = 100f;
+
     [SerializeField] private bool Enemy = false;
     [SerializeField] private bool UseHealthBar = false;
-    
     [SerializeField] private GameObject PlayerHealthBarUI;
     [SerializeField] private GameObject EnemyBossHealthBarUI;
     private GameObject _healthBar;
-    
+
     public float Current => currentHealth;
     public float Max => maxHealth;
+
     private bool _undeadActive = false;
     private float _undeadEndUnscaled = -1f;
 
-    private OrgansManager _organs;      // player ONLY
-    private PlayerController _player;   // player ONLY  
+    private OrgansManager _organs;
+    private CombatStats _stats;
+
+    private const string SRC_KIDNEYS_SPEED  = "Organs:KidneysSpeed";
+    private const string SRC_KIDNEYS_ATTACK = "Organs:KidneysAttack";
 
     private void Awake()
-    {//TODO: Fix Health Bar
-        /*if (Enemy)
-        {
-            maxHealth = (float)gameObject.GetComponent<EnemyStats>()?.MaxHealth;
-            
-        }
-        else
-        {
-            _healthBar = PlayerHealthBarUI;
-            _healthBar.SetActive(true);
-        }
-*/
+    {
         currentHealth = Mathf.Clamp(currentHealth, 0f, maxHealth);
-        
 
         if (isPlayer)
         {
             _organs = GetComponent<OrgansManager>();
-            _player = GetComponent<PlayerController>();
+            _stats = GetComponent<CombatStats>();
         }
     }
 
@@ -62,46 +53,63 @@ public class Health : MonoBehaviour
             TickLiverRegen();
     }
 
-
     public void Heal(float amount)
     {
         if (amount <= 0f) return;
+
         float before = currentHealth;
         currentHealth = Mathf.Min(maxHealth, currentHealth + amount);
+
         float delta = currentHealth - before;
-        if (delta > 0f)
-            Healed?.Invoke(this, delta);
+        if (delta > 0f) Healed?.Invoke(this, delta);
     }
 
     public void HealToFull()
     {
         float before = currentHealth;
         currentHealth = maxHealth;
+
         float delta = currentHealth - before;
-        if (delta > 0f)
-            Healed?.Invoke(this, delta);
+        if (delta > 0f) Healed?.Invoke(this, delta);
     }
 
     public void SetHealthToPercent(float pct01)
     {
         pct01 = Mathf.Clamp01(pct01);
+
         float target = maxHealth * pct01;
         if (currentHealth < target)
         {
             float before = currentHealth;
             currentHealth = target;
+
             float delta = currentHealth - before;
-            if (delta > 0f)
-                Healed?.Invoke(this, delta);
+            if (delta > 0f) Healed?.Invoke(this, delta);
+        }
+    }
+
+    public void ClampHealthToMaxPercent(float pct01)
+    {
+        pct01 = Mathf.Clamp01(pct01);
+        float cap = maxHealth * pct01;
+
+        if (currentHealth > cap)
+        {
+            float before = currentHealth;
+            currentHealth = cap;
+
+            float delta = before - currentHealth;
+            if (delta > 0f) Damaged?.Invoke(this, delta);
         }
     }
 
     public void TakeDamage(GameObject source, float baseDamage)
     {
         float dmg = Mathf.Max(0f, baseDamage);
-
         if (isPlayer)
-            dmg = PlayerEvents.ApplyIncomingDamage(source, dmg);
+        {
+            dmg = PlayerEvents.ApplyIncomingDamage(source, gameObject, dmg);
+        }
 
         if (dmg <= 0f)
         {
@@ -124,9 +132,15 @@ public class Health : MonoBehaviour
                 ActivateUndead(dur);
 
                 if (healToPct > 0f) SetHealthToPercent(healToPct);
-                if (_player != null && speedMult > 1f) _player.SetMovementSpeedMultiplierTimed(speedMult, dur);
+
+                if (_stats != null)
+                {
+                    if (speedMult > 1f)  _stats.AddMoveSpeedMul(SRC_KIDNEYS_SPEED, speedMult, dur);
+                    if (attackMult > 1f) _stats.AddAttackMul(SRC_KIDNEYS_ATTACK, attackMult, dur);
+                }
 
                 currentHealth = Mathf.Max(1f, currentHealth);
+
                 if (dmg > 0f) Damaged?.Invoke(this, dmg);
                 PlayerEvents.RaiseDamageTaken(source, 0f);
                 return;
@@ -164,6 +178,7 @@ public class Health : MonoBehaviour
             Debug.Log("Player died.");
         }
     }
+
     private void TickLiverRegen()
     {
         if (_organs == null) return;
@@ -193,19 +208,17 @@ public class Health : MonoBehaviour
         }
 
         float hpPct = (maxHealth <= 0f) ? 0f : (currentHealth / maxHealth);
-
         if (hpPct >= triggerBelow) return;
 
         float capHealth = maxHealth * regenCap;
         if (currentHealth >= capHealth) return;
 
         float amount = maxHealth * liverRegenPercentPerSecond * Time.deltaTime;
+
         float before = currentHealth;
         currentHealth = Mathf.Min(capHealth, currentHealth + amount);
 
         float delta = currentHealth - before;
-        if (delta > 0f)
-            Healed?.Invoke(this, delta);
+        if (delta > 0f) Healed?.Invoke(this, delta);
     }
-
 }

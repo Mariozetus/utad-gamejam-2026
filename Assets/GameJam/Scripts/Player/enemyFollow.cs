@@ -1,20 +1,23 @@
 using UnityEngine;
 using UnityEngine.AI;
 
-public class enemyFollow : MonoBehaviour
+public class EnemyFollow : MonoBehaviour
 {
-    public Transform player;
-    private NavMeshAgent agent;
+    [SerializeField] private Transform player;
+    private NavMeshAgent _agent;
+    
     void Start()
     {
-        agent = GetComponent<NavMeshAgent>();
+        _agent = GetComponent<NavMeshAgent>();
+        _agent.speed = GetComponent<Enemy>().EnemyStats.MoveSpeed;
     }
     
     void Update()
     {
         if (player != null)
         {
-            agent.SetDestination(player.position);
+            _agent.SetDestination(player.position);
+
         }
         
     }

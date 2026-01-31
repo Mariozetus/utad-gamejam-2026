@@ -1,4 +1,5 @@
 
+using System;
 using System.Collections.Generic;
 using Unity.VectorGraphics;
 using UnityEngine;
@@ -10,6 +11,7 @@ public class GameManager : MonoBehaviour
     private Dictionary<int, GameLevel> gameLevelsDictionary = new Dictionary<int, GameLevel>();
     public GameLevel CurrentLevel;
     public int UnlockedLevels;
+    private PlayerController _playerController;
 
     private void Awake()
     {
@@ -53,6 +55,14 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void ChangeGameLevel(GameLevel gameLevel)
+    {
+        AudioManager.Instance.StopAllSounds();
+        SceneController.Instance.LoadScene(gameLevel.Scene);
+        CurrentLevel = gameLevel;
+        AudioManager.Instance.PlayMusic(gameLevel.LevelMusic);
+    }
+
     private void AddLevelsToDictionary(GameLevel[] gameLevels)
     {
         foreach(GameLevel level in gameLevels)
@@ -69,9 +79,15 @@ public class GameManager : MonoBehaviour
         throw new System.NotImplementedException();
     }
 
-    public void ChangeGameLevel(GameLevel gameLevel)
+    public void RegisterPlayer(PlayerController player)
     {
-        SceneController.Instance.LoadScene(gameLevel.Scene);
-        CurrentLevel = gameLevel;
+        _playerController = player;
     }
+
+    public void OnBossDefeated()
+    {
+        EnemyManager.Instance.KillAllEnemies();
+    }
+
+    public PlayerController Player => _playerController;
 }
