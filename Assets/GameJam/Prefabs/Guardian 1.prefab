@@ -207,5 +207,5 @@ MonoBehaviour:
   bulletprefab: {fileID: 2104141845373853977, guid: 66f85afd41a22a0469df1899a2332d37, type: 3}
   speed: 10
   distance: 0
-  meleeRange: 0.5
-  rangedRange: 10
+  meleeRange: 2
+  rangedRange: 15

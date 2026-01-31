@@ -11,32 +11,31 @@ public class guardianEnemy : Enemy
     private void Update()
     {
         distance = Vector3.Distance(transform.position, GameManager.Instance.Player.transform.position);
-        
-        RaycastHit hit;
+
         if (shotCoolDown <= 0)
         {
-            
-            
-                if (distance >= 5)
-                {
-                if (Physics.Raycast(transform.position, transform.forward, out hit, rangedRange, playerLayer))
-                {
-
+        
+            if (distance >= 5)
+            {
                 
-                    RangedAttack();
-                }
-                else
+                if (Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, rangedRange, playerLayer))
                 {
-                    if (Physics.Raycast(transform.position, transform.forward, out hit, meleeRange, playerLayer))
-                        Attack();
+                    RangedAttack();
+                    shotCoolDown = startShotCoolDown;
                 }
-
-                shotCoolDown = startShotCoolDown;
+            }
+            else 
+            {
+               
+                if (Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, meleeRange, playerLayer))
+                {
+                    Attack();
+                    shotCoolDown = startShotCoolDown;
+                }
             }
         }
 
         shotCoolDown -= Time.deltaTime;
-
     }
     protected override void Attack()
     {
