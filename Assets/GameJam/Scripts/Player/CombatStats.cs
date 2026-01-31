@@ -23,6 +23,30 @@ public class CombatStats : MonoBehaviour
         Attack.Tick(now);
     }
 
+    public void IncreaseBaseMoveSpeedFlat(float add)
+    {
+        if (add <= 0f) return;
+        MoveSpeed.BaseValue += add;
+    }
+
+    public void IncreaseBaseMoveSpeedPercent(float pct01)
+    {
+        if (pct01 <= 0f) return;
+        MoveSpeed.BaseValue += MoveSpeed.BaseValue * pct01;
+    }
+
+    public void IncreaseBaseAttackFlat(float add)
+    {
+        if (add <= 0f) return;
+        Attack.BaseValue += add;
+    }
+
+    public void IncreaseBaseAttackPercent(float pct01)
+    {
+        if (pct01 <= 0f) return;
+        Attack.BaseValue += Attack.BaseValue * pct01;
+    }
+
     public void SetBaseMoveSpeed(float v) => MoveSpeed.BaseValue = v;
     public void SetBaseAttack(float v) => Attack.BaseValue = v;
 

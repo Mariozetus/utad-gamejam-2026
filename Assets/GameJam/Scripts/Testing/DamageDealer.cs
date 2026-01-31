@@ -30,6 +30,12 @@ public class DamageDealer : MonoBehaviour
             float dmg = PlayerEvents.ApplyOutgoingDamage(hp.gameObject, baseDamage);
             hp.TakeDamage(gameObject, dmg);
             PlayerEvents.RaiseDamageDealt(hp.gameObject, dmg);
+        
+        /*        enemy to player
+                var hp = player.GetComponentInParent<Health>();
+                if (hp == null) return;
+                hp.TakeDamage(enemy, baseDamage);
+        */
         }
     }
 }

@@ -32,6 +32,7 @@ public class Health : MonoBehaviour
 
     private void Awake()
     {
+        maxHealth = Mathf.Max(1f, maxHealth);
         currentHealth = Mathf.Clamp(currentHealth, 0f, maxHealth);
 
         if (isPlayer)
@@ -51,6 +52,22 @@ public class Health : MonoBehaviour
 
         if (isPlayer)
             TickLiverRegen();
+    }
+    
+    public void IncreaseMaxHealthFlat(float add, bool healToFull = true)
+    {
+        if (add <= 0f) return;
+        maxHealth = Mathf.Max(1f, maxHealth + add);
+
+        if (healToFull) currentHealth = maxHealth;
+        else currentHealth = Mathf.Min(currentHealth, maxHealth);
+    }
+
+    public void IncreaseMaxHealthPercent(float pct01, bool healToFull = true)
+    {
+        if (pct01 <= 0f) return;
+        float add = maxHealth * pct01;
+        IncreaseMaxHealthFlat(add, healToFull);
     }
 
     public void Heal(float amount)
