@@ -1,0 +1,95 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 540c23bc6a3316b4c85ebfb1c6cd7b62, type: 3}
+  m_Name: MusicLibrary
+  m_EditorClassIdentifier: Assembly-CSharp::SoundLibrary
+  sounds:
+  - name: Battle Intro
+    clip: {fileID: 8300000, guid: ded9daae9f6f5b0439cbe94e3f2c97f8, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+    randomizePitch: 0
+    pitchVariation: 0
+    source: {fileID: 0}
+  - name: Battle Loop
+    clip: {fileID: 8300000, guid: d7a2aa2208544ce49a8ffbcfbf72d049, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 1
+    randomizePitch: 0
+    pitchVariation: 0
+    source: {fileID: 0}
+  - name: After Mini Boss Intro
+    clip: {fileID: 8300000, guid: 3d09455723a66fe40954b6e9cd0459c9, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+    randomizePitch: 0
+    pitchVariation: 0
+    source: {fileID: 0}
+  - name: After Mini Boss Loop
+    clip: {fileID: 8300000, guid: b9c438c81cf669248a3e385472e85e7e, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 1
+    randomizePitch: 0
+    pitchVariation: 0
+    source: {fileID: 0}
+  - name: Mini Boss Intro
+    clip: {fileID: 8300000, guid: 407f35f50808f324cbb30e88f88e9d46, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+    randomizePitch: 0
+    pitchVariation: 0
+    source: {fileID: 0}
+  - name: Mini Boss Loop
+    clip: {fileID: 8300000, guid: bd9bc074e1296504f8bce15dbf2ac0e8, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 1
+    randomizePitch: 0
+    pitchVariation: 0
+    source: {fileID: 0}
+  - name: Death Player
+    clip: {fileID: 8300000, guid: 19f5f8ccb3c491d4eae0229a2a307b46, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 1
+    randomizePitch: 0
+    pitchVariation: 0
+    source: {fileID: 0}
+  - name: Main Menu
+    clip: {fileID: 8300000, guid: e7cc776f741b4de4b89aa4855697ca43, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 1
+    randomizePitch: 0
+    pitchVariation: 0
+    source: {fileID: 0}
+  - name: Final Boss Intro
+    clip: {fileID: 8300000, guid: 05aec8ec909fd5044a1c873761e870e4, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+    randomizePitch: 0
+    pitchVariation: 0
+    source: {fileID: 0}
+  - name: Final Boss Loop
+    clip: {fileID: 8300000, guid: f8c2bda96c9b6944aa20967fe7bd2e71, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 1
+    randomizePitch: 0
+    pitchVariation: 0
+    source: {fileID: 0}
