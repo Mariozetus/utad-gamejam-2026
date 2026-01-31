@@ -1,8 +1,9 @@
 using UnityEngine;
 
-public class rangedEnemy : enemy
+public class RangedEnemy : Enemy
 {
-    public GameObject bullet;
+    [SerializeField] protected GameObject bullet;
+
     private void Update()
     {
         RaycastHit hit;
@@ -10,12 +11,8 @@ public class rangedEnemy : enemy
         {
             if (Physics.Raycast(transform.position, transform.forward, out hit, attackrange, playerLayer))
             {
-
-
-                attack();
+                Attack();
                 shotCoolDown = startShotCoolDown;
-
-
             }
         }
 
@@ -24,7 +21,7 @@ public class rangedEnemy : enemy
     }
 
 
-    void attack()
+    protected override void Attack()
     {
        Instantiate(bullet, attackpoint.position, attackpoint.rotation);
     }

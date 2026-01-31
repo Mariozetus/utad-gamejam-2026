@@ -7,8 +7,10 @@ public class GameLevel : ScriptableObject
     [SerializeField] private string levelName;
     [SerializeField] private SceneReference sceneReference;
     [SerializeField] private float startGracePeriod = 30f;
+    [SerializeField] private string levelMusic;
 
     public SceneReference Scene { get => sceneReference; private set{} }
     public string Name { get => levelName; private set{} }
     public float InitialGracePeriod { get => startGracePeriod; private set{} }
+    public string LevelMusic { get => levelMusic; private set{} }
 }
