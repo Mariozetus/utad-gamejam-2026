@@ -23,6 +23,11 @@ public class PlayerController : MonoBehaviour
     // Pause screen.
     public bool screenPaused;
 
+    [Header("ORGANS (Runtime Multipliers)")]
+    [SerializeField] private bool useUnscaledRotationLerp = false; 
+    private float _movementSpeedMultiplier = 1f;  
+    private float _movementSpeedMultiplierEndUnscaled = -1f; 
+
     private void Start()
     {
         _characterController = GetComponent<CharacterController>();
@@ -38,9 +43,11 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        TickOrgansSpeedBuff();
         UpdateMovement();
         ApplyTotalVelocity();
     }
+
     private void UpdateMovement(){
     
     // PREFABS.
@@ -87,11 +94,16 @@ public class PlayerController : MonoBehaviour
         if (desiredMove.magnitude > 0.1f)
         {
             Quaternion targetRotation = Quaternion.LookRotation(desiredMove);
-            transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+
+            float dt = useUnscaledRotationLerp ? Time.unscaledDeltaTime : Time.deltaTime;
+            transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotationSpeed * dt);
+            //transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
         }
 
-        // Movement.
-        _velocity = desiredMove * _currentSpeed;
+        
+        float finalSpeed = _currentSpeed * _movementSpeedMultiplier;
+        _velocity = desiredMove * finalSpeed;
+        //_velocity = desiredMove * _currentSpeed;
 
         if (_animator != null)
         {
@@ -99,19 +111,48 @@ public class PlayerController : MonoBehaviour
         }
     }
     
-        public void setPause(bool p)
-        {
-            screenPaused = p;
-        }
-
-        private void ApplyTotalVelocity()
-        {
-            _characterController.SimpleMove(_velocity);
-        }
-
-        public Transform GetTransform(out bool playerOnSight)
-        {
-            playerOnSight = true;
-            return transform;
-        }
+    public void setPause(bool p)
+    {
+        screenPaused = p;
     }
+
+    private void ApplyTotalVelocity()
+    {
+        _characterController.SimpleMove(_velocity);
+    }
+
+    public Transform GetTransform(out bool playerOnSight)
+    {
+        playerOnSight = true;
+        return transform;
+    }
+
+
+    public void SetMovementSpeedMultiplier(float multiplier)
+     {
+         _movementSpeedMultiplier = Mathf.Max(0f, multiplier);
+         _movementSpeedMultiplierEndUnscaled = -1f;
+     }
+    
+     public void SetMovementSpeedMultiplierTimed(float multiplier, float durationSeconds)
+     {
+         _movementSpeedMultiplier = Mathf.Max(0f, multiplier);
+         _movementSpeedMultiplierEndUnscaled = Time.unscaledTime + Mathf.Max(0f, durationSeconds);
+     }
+
+     public void ResetMovementSpeedMultiplier()
+   {
+         _movementSpeedMultiplier = 1f;
+        _movementSpeedMultiplierEndUnscaled = -1f;
+   }
+
+     private void TickOrgansSpeedBuff()
+    {
+         if (_movementSpeedMultiplierEndUnscaled < 0f) return;
+         if (Time.unscaledTime >= _movementSpeedMultiplierEndUnscaled)
+        {
+            _movementSpeedMultiplier = 1f;
+             _movementSpeedMultiplierEndUnscaled = -1f;
+         }
+    }
+}
