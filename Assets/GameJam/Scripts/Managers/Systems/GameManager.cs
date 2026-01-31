@@ -25,19 +25,32 @@ public class GameManager : MonoBehaviour
         }
 
         AddLevelsToDictionary(allGameLevels);
+        CheckActualLevel();
     }
 
-    private void Update()
+    void OnEnable()
     {
-        if(Input.GetKeyDown(KeyCode.Space))
-        {
-            SceneController.Instance.LoadScene(allGameLevels[1].Scene);
-        }
+        SceneController.Instance.OnSceneLoaded += CheckActualLevel;
+    }
+
+    void OnDisable()
+    {
+        SceneController.Instance.OnSceneLoaded -= CheckActualLevel;
     }
 
     private void OnValidate()
     {
         AddLevelsToDictionary(allGameLevels);
+    }
+
+    private void CheckActualLevel()
+    {
+        int buildIndex = UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex;
+        Logger.Log($"Current Scene Build Index: {buildIndex}", LogType.System);
+        if(gameLevelsDictionary.ContainsKey(buildIndex))
+        {
+            CurrentLevel = gameLevelsDictionary[buildIndex];
+        }
     }
 
     private void AddLevelsToDictionary(GameLevel[] gameLevels)
@@ -46,6 +59,7 @@ public class GameManager : MonoBehaviour
         {
             if (!gameLevelsDictionary.ContainsKey(level.Scene.SceneBuildIndex))
             {
+                Logger.Log($"Adding level ( {level.Name}, {level.Scene.SceneBuildIndex} ) to dictionary", LogType.System);
                 gameLevelsDictionary.Add(level.Scene.SceneBuildIndex, level);
             }
         }
@@ -58,7 +72,6 @@ public class GameManager : MonoBehaviour
 
     public void ChangeGameLevel(GameLevel gameLevel)
     {
-        gameLevelsDictionary[CurrentLevel.Scene.SceneBuildIndex].IsUnlocked = true;
         SceneController.Instance.LoadScene(gameLevel.Scene);
         CurrentLevel = gameLevel;
     }

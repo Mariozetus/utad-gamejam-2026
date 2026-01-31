@@ -1,9 +1,11 @@
 using System.Collections;
 using UnityEngine;
+using System;
 
 public class SceneController : MonoBehaviour
 {
     public static SceneController Instance;
+    public Action OnSceneLoaded;
 
     private void Awake()
     {
@@ -41,6 +43,7 @@ public class SceneController : MonoBehaviour
             yield return null;
         }
         // UIManager.FadeIn(2f);
+        OnSceneLoaded?.Invoke();
     }
 
 

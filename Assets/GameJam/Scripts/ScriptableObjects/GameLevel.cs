@@ -5,12 +5,10 @@ using UnityEngine;
 public class GameLevel : ScriptableObject
 {
     [SerializeField] private string levelName;
-    [SerializeField] private string descrpition;
     [SerializeField] private SceneReference sceneReference;
-    [SerializeField] private bool levelIsUnlocked;
+    [SerializeField] private float startGracePeriod = 30f;
 
     public SceneReference Scene { get => sceneReference; private set{} }
     public string Name { get => levelName; private set{} }
-    public string Description { get => descrpition; private set{} }
-    public bool IsUnlocked { get => levelIsUnlocked; set{ levelIsUnlocked = value; } }
+    public float InitialGracePeriod { get => startGracePeriod; private set{} }
 }
