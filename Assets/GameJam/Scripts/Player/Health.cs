@@ -2,10 +2,9 @@ using UnityEngine;
 
 public class Health : MonoBehaviour
 {
+
     public static event System.Action<Health, float> Damaged;
     public static event System.Action<Health, float> Healed;
-
-    
     [Header("Liver Passive Regen")]
     [SerializeField] private float liverRegenPercentPerSecond = 0.05f;
 
@@ -13,6 +12,13 @@ public class Health : MonoBehaviour
     [SerializeField] private bool isPlayer = false;
     [SerializeField] private float maxHealth = 100f;
     [SerializeField] private float currentHealth = 100f;
+    [SerializeField] private bool Enemy = false;
+    [SerializeField] private bool UseHealthBar = false;
+    
+    [SerializeField] private GameObject PlayerHealthBarUI;
+    [SerializeField] private GameObject EnemyBossHealthBarUI;
+    private GameObject _healthBar;
+    
     public float Current => currentHealth;
     public float Max => maxHealth;
     private bool _undeadActive = false;
@@ -22,8 +28,20 @@ public class Health : MonoBehaviour
     private PlayerController _player;   // player ONLY  
 
     private void Awake()
-    {
+    {//TODO: Fix Health Bar
+        /*if (Enemy)
+        {
+            maxHealth = (float)gameObject.GetComponent<EnemyStats>()?.MaxHealth;
+            
+        }
+        else
+        {
+            _healthBar = PlayerHealthBarUI;
+            _healthBar.SetActive(true);
+        }
+*/
         currentHealth = Mathf.Clamp(currentHealth, 0f, maxHealth);
+        
 
         if (isPlayer)
         {
