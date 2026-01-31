@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -30,6 +31,8 @@ public class PlayerController : MonoBehaviour
     {
         Instance = this;
         if (stats == null) stats = GetComponent<CombatStats>();
+
+        GameManager.Instance:RegisterPlayer(this);
     }
 
     private void Start()
@@ -46,6 +49,9 @@ public class PlayerController : MonoBehaviour
 
         // Feed base move speed into stats
         if (stats != null) stats.SetBaseMoveSpeed(_currentSpeed);
+
+        InputManager.Instance.HitCanceled += Attack;
+        InputManager.Instance.HitPerformed += RangedAttack;
     }
 
     private void Update()
@@ -53,7 +59,6 @@ public class PlayerController : MonoBehaviour
         UpdateMovement();
         ApplyTotalVelocity();
     }
-
     private void UpdateMovement()
     {
         if (screenPaused) return;
@@ -94,6 +99,12 @@ public class PlayerController : MonoBehaviour
 
     public void Attack()
     {
-        Logger.Warning("E");
+
+        Logger.Log("Normal Attack");
+    }
+
+    public void RangedAttack()
+    {
+        Logger.Log("Range");
     }
 }
