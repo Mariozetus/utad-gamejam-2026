@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6551115253152458035}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: attack point
   m_TagString: Untagged
   m_Icon: {fileID: 2488908585195742037, guid: 0000000000000000d000000000000000, type: 0}
@@ -46,7 +46,7 @@ GameObject:
   - component: {fileID: 552500530199889313}
   - component: {fileID: 7896958072404780781}
   - component: {fileID: 4012428855781974800}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Horus
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 4392648148941827849}
   - component: {fileID: 198940772278656324}
   - component: {fileID: 7786164749751368601}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: rangedEnemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -205,7 +205,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8533740590391424174}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: attack point
   m_TagString: Untagged
   m_Icon: {fileID: 2488908585195742037, guid: 0000000000000000d000000000000000, type: 0}

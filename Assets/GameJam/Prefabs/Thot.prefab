@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 3419077651030685842}
   - component: {fileID: 2719776824433538701}
   - component: {fileID: 1693081367000797021}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Thot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -185,7 +185,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7663248045201717711}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: attack point
   m_TagString: Untagged
   m_Icon: {fileID: 2488908585195742037, guid: 0000000000000000d000000000000000, type: 0}

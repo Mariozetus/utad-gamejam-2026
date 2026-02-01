@@ -7,8 +7,10 @@ public class PlayerAttackCollisionsController : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
+        Logger.Log("Trigger entered by: " + other.gameObject.name + " Layer: " + other.gameObject.layer, LogType.Player, this);
         if (other.gameObject.layer == LayerMask.NameToLayer("Enemy"))
         {
+            Logger.Log("Enemy entered attack trigger: " + other.gameObject.name, LogType.Player, this);
             if (!enemiesIn.Contains(other.gameObject)){
                 enemiesIn.Add(other.gameObject);
             }
@@ -17,8 +19,11 @@ public class PlayerAttackCollisionsController : MonoBehaviour
 
     void OnTriggerExit(Collider other)
     {
+        Logger.Log("Trigger entered by: " + other.gameObject.name + " Layer: " + other.gameObject.layer, LogType.Player, this);
+
         if (other.gameObject.layer == LayerMask.NameToLayer("Enemy"))
         {
+            Logger.Log("Enemy exited attack trigger: " + other.gameObject.name, LogType.Player, this);
             enemiesIn.Remove(other.gameObject);
         }
     }

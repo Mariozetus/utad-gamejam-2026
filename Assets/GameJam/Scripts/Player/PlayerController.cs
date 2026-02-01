@@ -71,7 +71,7 @@ public class PlayerController : MonoBehaviour
         RaycastHit hit;
         if (shotCoolDown <= 0)
         {
-            if (Physics.Raycast(transform.position, transform.forward, out hit, attackrange, enemy))
+            if (Physics.Raycast(transform.position, transform.forward, out hit, attackrange, enemyLayer))
             {
                 Attack();
                 shotCoolDown = startShotCoolDown;
@@ -122,9 +122,11 @@ public class PlayerController : MonoBehaviour
 
     public void Attack()
     {
-        var enemies = attackCollisions.GetEnemiesInTrigger();
+        Logger.Log("Player Attack triggered", LogType.Player, this);
+        var enemies = GetComponentInChildren<PlayerAttackCollisionsController>()?.GetEnemiesInTrigger();
         if (enemies != null)
         {
+            Logger.Log("Attacking enemies: " + enemies.Count, LogType.Player, this);
             // first one.
             var enemy = enemies[0];
             if (enemy.layer == LayerMask.NameToLayer("Enemy"))
@@ -132,6 +134,7 @@ public class PlayerController : MonoBehaviour
                 var health = enemy.GetComponent<Health>();
                 if (health != null)
                 {
+                    Logger.Log("Dealing damage to: " + enemy.name, LogType.Player, this);
                     health.TakeDamage(gameObject, stats.Attack.BaseValue);
                 }
             }
@@ -152,7 +155,7 @@ public class PlayerController : MonoBehaviour
         {
             fireball.SetDamage(stats.Attack.BaseValue);
         }
-        var rb = bullet.GetComponent<Rigidbody>();
+        var rb = bulletLoc.GetComponent<Rigidbody>();
         if (rb != null)
         {
             rb.linearVelocity = attackpoint.forward * fireballspeed;

@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 5310700987817842063}
   - component: {fileID: 5701188328611469312}
   - component: {fileID: -4881071625241595676}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: meleeEnemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -203,7 +203,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7293683260583552951}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: attack point
   m_TagString: Untagged
   m_Icon: {fileID: 2488908585195742037, guid: 0000000000000000d000000000000000, type: 0}
