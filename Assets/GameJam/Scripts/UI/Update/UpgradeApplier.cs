@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class UpgradeApplier : MonoBehaviour
 {
-    [Header("Targets")]
+    [Header("Targets (Player)")]
     [SerializeField] private Health health;
     [SerializeField] private CombatStats combatStats;
 
@@ -12,55 +12,39 @@ public class UpgradeApplier : MonoBehaviour
         if (combatStats == null) combatStats = GetComponent<CombatStats>();
     }
 
-    public void Apply(UpgradeOption option)
+    public float GetBaseValue(StatType type)
     {
-        if (option == null || option.stat == null || option.rarity == null) return;
-
-        float mult = Mathf.Max(0f, option.rarity.statMultiplier);
-
-        switch (option.stat.statType)
+        switch (type)
         {
             case StatType.Health:
-                ApplyHealth(option.stat, mult);
+                return health != null ? health.Max : 0f;
+
+            case StatType.Strength:
+                return combatStats != null ? combatStats.GetBaseAttack() : 0f;
+
+            case StatType.Speed:
+                return combatStats != null ? combatStats.GetBaseMoveSpeed() : 0f;
+        }
+        return 0f;
+    }
+
+    public void ApplyPercentUpgrade(StatType type, float percent01)
+    {
+        percent01 = Mathf.Max(0f, percent01);
+
+        switch (type)
+        {
+            case StatType.Health:
+                if (health != null) health.IncreaseMaxHealthPercent(percent01, healToFull: true);
                 break;
 
             case StatType.Strength:
-                ApplyAttack(option.stat, mult);
+                if (combatStats != null) combatStats.IncreaseBaseAttackPercent(percent01);
                 break;
 
             case StatType.Speed:
-                ApplySpeed(option.stat, mult);
+                if (combatStats != null) combatStats.IncreaseBaseMoveSpeedPercent(percent01);
                 break;
         }
-    }
-
-    private void ApplyHealth(StatConfigSO stat, float mult)
-    {
-        if (health == null) return;
-
-        if (stat.increaseMode == IncreaseMode.Flat)
-            health.IncreaseMaxHealthFlat(stat.baseFlat * mult, healToFull: true);
-        else
-            health.IncreaseMaxHealthPercent(stat.basePercent * mult, healToFull: true);
-    }
-
-    private void ApplyAttack(StatConfigSO stat, float mult)
-    {
-        if (combatStats == null) return;
-
-        if (stat.increaseMode == IncreaseMode.Flat)
-            combatStats.IncreaseBaseAttackFlat(stat.baseFlat * mult);
-        else
-            combatStats.IncreaseBaseAttackPercent(stat.basePercent * mult);
-    }
-
-    private void ApplySpeed(StatConfigSO stat, float mult)
-    {
-        if (combatStats == null) return;
-
-        if (stat.increaseMode == IncreaseMode.Flat)
-            combatStats.IncreaseBaseMoveSpeedFlat(stat.baseFlat * mult);
-        else
-            combatStats.IncreaseBaseMoveSpeedPercent(stat.basePercent * mult);
     }
 }

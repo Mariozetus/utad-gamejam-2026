@@ -62,6 +62,13 @@ public class OrgansManager : MonoBehaviour
     private float _stackedSpeedMult = 1f;
     private bool _screenWipeReady = false;
     private float _lastTauntUnscaled = -999f;
+    
+    public event Action BullChargeRequested;             
+    public event Action<float> WindWaveRequested;       
+
+    [SerializeField] private float khnumLungsChargeDuration = 1f;
+    [SerializeField] private float hapiLungsWindDuration = 1f;
+
 
     private void OnEnable()
     {
@@ -83,6 +90,46 @@ public class OrgansManager : MonoBehaviour
 
         PlayerEvents.OutgoingDamageModify -= OnOutgoingDamageModify;
         PlayerEvents.IncomingDamageModify -= OnIncomingDamageModify;
+    }
+
+    
+    public bool TryUseEyesActive(out float slowDuration)
+    {
+        slowDuration = 0f;
+
+        if (!_active.TryGetValue(OrgansType.Eyes, out var eyes))
+            return false;
+
+        if (eyes != MiniBossType.Hapi)
+            return false;
+
+        slowDuration = hapiEyesSlowTimeDuration;
+        return slowDuration > 0f;
+    }
+
+    public bool TryUseLungsActive()
+    {
+        if (!_active.TryGetValue(OrgansType.Lungs, out var lungs))
+            return false;
+
+        if (lungs == MiniBossType.Khnum)
+        {
+            BullChargeRequested?.Invoke();
+            return true;
+        }
+
+        if (lungs == MiniBossType.Hapi)
+        {
+            WindWaveRequested?.Invoke(hapiLungsWindDuration);
+            return true;
+        }
+        
+        return false;
+    }
+
+    public bool TryUseStomachActive(GameObject playerSource)
+    {
+        return TryUseScreenWipe(playerSource);
     }
 
     private void OnOrganPickedUp(OrgansObject organ, GameObject interactor)

@@ -4,50 +4,69 @@ using UnityEngine.UI;
 
 public class UpgradeCardUI : MonoBehaviour
 {
-    [Header("Texts")]
+    [Header("UI")]
     [SerializeField] private TMP_Text titleText;
+    [SerializeField] private TMP_Text descText;
     [SerializeField] private TMP_Text rarityText;
-    [SerializeField] private TMP_Text valueText;
+    [SerializeField] private TMP_Text previewBaseText;
+    [SerializeField] private TMP_Text previewNewText;
 
-    [Header("Images")]
     [SerializeField] private Image iconImage;
     [SerializeField] private Image frameImage;
     [SerializeField] private Image backgroundImage;
+    [SerializeField] private Image fxImage;
 
-    private UpgradeOption _option;
-    private UpgradeApplier _applier;
+    [SerializeField] private Button button;
 
-    public void Setup(UpgradeOption option, UpgradeApplier applier)
+    private StatConfigSO _stat;
+    private RarityConfigSO _rarity;
+    private UpgradeSelectionManager _manager;
+
+    public void Setup(UpgradeSelectionManager manager, UpgradeApplier applier, StatConfigSO stat, RarityConfigSO rarity)
     {
-        _option = option;
-        _applier = applier;
+        _manager = manager;
+        _stat = stat;
+        _rarity = rarity;
 
-        if (_option?.stat == null || _option?.rarity == null) return;
+        if (_stat == null || _rarity == null) return;
 
-        if (titleText) titleText.text = _option.stat.upgradeTitle;
-        if (rarityText) rarityText.text = _option.rarity.rarityText;
+        if (titleText) titleText.text = _stat.upgradeTitle;
+        if (descText) descText.text = _stat.description;
+        if (rarityText) rarityText.text = _rarity.rarityText;
 
-        if (titleText) titleText.color = _option.rarity.titleColor;
-        if (frameImage) frameImage.color = _option.rarity.borderColor;
+        if (titleText) titleText.color = _rarity.titleColor;
+        if (frameImage) frameImage.color = _rarity.borderColor;
 
-        if (iconImage) iconImage.sprite = _option.stat.statIcon;
-        if (frameImage && _option.rarity.rarityFrameSprite) frameImage.sprite = _option.rarity.rarityFrameSprite;
-        if (backgroundImage && _option.rarity.rarityBackgroundSprite) backgroundImage.sprite = _option.rarity.rarityBackgroundSprite;
+        if (iconImage) iconImage.sprite = _stat.statIcon;
+        if (frameImage && _rarity.rarityFrameSprite) frameImage.sprite = _rarity.rarityFrameSprite;
+        if (backgroundImage && _rarity.rarityBackgroundSprite) backgroundImage.sprite = _rarity.rarityBackgroundSprite;
 
-        float mult = Mathf.Max(0f, _option.rarity.statMultiplier);
-        string preview = BuildPreview(_option.stat, mult);
-        if (valueText) valueText.text = preview;
+        if (fxImage)
+        {
+            fxImage.sprite = _rarity.rarityFxSprite;
+            fxImage.enabled = _rarity.rarityFxSprite != null;
+        }
+
+        if (applier != null)
+        {
+            float baseVal = applier.GetBaseValue(_stat.statType);
+            float pct = Mathf.Max(0f, _rarity.statMultiplier);
+            float newVal = baseVal * (1f + pct);
+            if (previewBaseText) previewBaseText.text = $"{baseVal:0.##}";
+            if (previewNewText) previewNewText.text = $"{newVal:0.##}";
+        }
+
+        if (button != null)
+        {
+            button.onClick.RemoveAllListeners();
+            button.onClick.AddListener(OnClicked);
+        }
     }
 
-    private string BuildPreview(StatConfigSO stat, float mult)
+    private void OnClicked()
     {
-        if (stat.increaseMode == IncreaseMode.Flat)
-            return $"+{(stat.baseFlat * mult):0.##}";
-        return $"+{(stat.basePercent * mult * 100f):0.#}%";
-    }
-    public void Choose()
-    {
-        if (_applier == null || _option == null) return;
-        _applier.Apply(_option);
+        if (_manager == null || _stat == null || _rarity == null) return;
+        _manager.Select(_stat, _rarity);
     }
 }
+

@@ -62,13 +62,7 @@ public class Health : MonoBehaviour
         if (healToFull) currentHealth = maxHealth;
         else currentHealth = Mathf.Min(currentHealth, maxHealth);
     }
-
-    public void IncreaseMaxHealthPercent(float pct01, bool healToFull = true)
-    {
-        if (pct01 <= 0f) return;
-        float add = maxHealth * pct01;
-        IncreaseMaxHealthFlat(add, healToFull);
-    }
+    
 
     public void Heal(float amount)
     {
@@ -238,4 +232,21 @@ public class Health : MonoBehaviour
         float delta = currentHealth - before;
         if (delta > 0f) Healed?.Invoke(this, delta);
     }
+    
+    
+    public void IncreaseMaxHealthPercent(float percent01, bool healToFull = true)
+    {
+        percent01 = Mathf.Max(0f, percent01);
+
+        float oldMax = maxHealth;
+        maxHealth = Mathf.Max(1f, maxHealth * (1f + percent01));
+
+        if (healToFull)
+            currentHealth = maxHealth;
+        else
+            currentHealth = Mathf.Clamp(currentHealth, 0f, maxHealth);
+        
+        //TODO: updateHealthBar();
+    }
+    
 }

@@ -18,5 +18,5 @@ MonoBehaviour:
   borderColor: {r: 1, g: 1, b: 1, a: 1}
   rarityFxSprite: {fileID: 21300000, guid: 089e7594556f57c4c807211a951e7a9b, type: 3}
   rarityFrameSprite: {fileID: 21300000, guid: 3f0ae577f0735b54cb3c26b0fb312e10, type: 3}
-  rarityBackgroundSprite: {fileID: 0}
+  rarityBackgroundSprite: {fileID: 21300000, guid: a74e61456b8a9eb4c92adb4a31847b9a, type: 3}
   statMultiplier: 1.45

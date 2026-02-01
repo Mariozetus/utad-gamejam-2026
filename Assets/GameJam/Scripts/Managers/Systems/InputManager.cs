@@ -11,6 +11,7 @@ public class InputManager : MonoBehaviour
     private bool _isHeld = false;
     private PlayerInputActions _inputActions;
     public Action PausePressed, UnpausePressed, InteractPressed, InteractCanceled, HitPerformed, HitCanceled;
+    public Action QPressed, EPressed, RPressed;
 
     public Action UiEscPressed;
     public Action UiEnterPressed;
@@ -36,7 +37,9 @@ public class InputManager : MonoBehaviour
     {
         if(_inputActions == null)
             return;
-        
+        _inputActions.Player.Q.performed += OnQPerformed;
+        _inputActions.Player.E.performed += OnEPerformed;
+        _inputActions.Player.R.performed += OnRPerformed;
         _inputActions.Player.Pause.performed += OnPausePerformed;
         _inputActions.UI.Unpause.performed += OnUnpausePerformed;
         _inputActions.UI.Enter.performed += OnUnpausePerformed;
@@ -58,6 +61,9 @@ public class InputManager : MonoBehaviour
             return;
 
         DisableAllInputs();
+        _inputActions.Player.Q.performed -= OnQPerformed;
+        _inputActions.Player.E.performed -= OnEPerformed;
+        _inputActions.Player.R.performed -= OnRPerformed;
         _inputActions.Player.Pause.performed -= OnPausePerformed;
         _inputActions.UI.Unpause.performed -= OnUnpausePerformed;
         _inputActions.Player.Interact.started -= OnInteractStarted;
@@ -119,8 +125,13 @@ public class InputManager : MonoBehaviour
         InteractCanceled?.Invoke();
     }
     
+    private void OnQPerformed(InputAction.CallbackContext ctx) => QPressed?.Invoke();
+    private void OnEPerformed(InputAction.CallbackContext ctx) => EPressed?.Invoke();
+    private void OnRPerformed(InputAction.CallbackContext ctx) => RPressed?.Invoke();
+    
     private void OnUiEsc(InputAction.CallbackContext ctx) => UiEscPressed?.Invoke();
     private void OnUiEnter(InputAction.CallbackContext ctx) => UiEnterPressed?.Invoke();
+    
     private void OnUiSpace(InputAction.CallbackContext ctx) => UiSpacePressed?.Invoke();
     private void OnUiTab(InputAction.CallbackContext ctx) => UiTabPressed?.Invoke();
     

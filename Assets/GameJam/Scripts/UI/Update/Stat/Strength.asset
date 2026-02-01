@@ -15,6 +15,4 @@ MonoBehaviour:
   statType: 1
   upgradeTitle: Strength
   description: opens you way
-  statLabel: 
-  statIcon: {fileID: 0}
-  baseValue: 100
+  statIcon: {fileID: 21300000, guid: cb9c82c2bda9d79478625ed9f2742cf9, type: 3}

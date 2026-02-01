@@ -15,6 +15,4 @@ MonoBehaviour:
   statType: 2
   upgradeTitle: Speed
   description: faster than death
-  statLabel: 
-  statIcon: {fileID: 0}
-  baseValue: 100
+  statIcon: {fileID: 21300000, guid: 80e3c80c903508a41b46e3cab94e7fe3, type: 3}

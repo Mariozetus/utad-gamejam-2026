@@ -15,6 +15,4 @@ MonoBehaviour:
   statType: 0
   upgradeTitle: Health
   description: brings you life
-  statLabel: 
-  statIcon: {fileID: 0}
-  baseValue: 100
+  statIcon: {fileID: 21300000, guid: bcd89979719bd70459873fededa70220, type: 3}

@@ -29,18 +29,33 @@ public class PlayerOrganBridge : MonoBehaviour
         organs.InstakillRequested += OnInstakillRequested;
         organs.ScreenWipeCharged += OnScreenWipeCharged;
         organs.TauntRequested += OnTauntRequested;
+
+        if (InputManager.Instance != null)
+        {
+            InputManager.Instance.QPressed += OnQPressed;
+            InputManager.Instance.EPressed += OnEPressed;
+            InputManager.Instance.RPressed += OnRPressed;
+        }
     }
 
     private void OnDisable()
     {
-        if (organs == null) return;
+        if (organs != null)
+        {
+            organs.HealToFullRequested -= OnHealToFullRequested;
+            organs.HealAmountRequested -= OnHealAmountRequested;
+            organs.SpeedBuffRequested -= OnSpeedBuffRequested;
+            organs.InstakillRequested -= OnInstakillRequested;
+            organs.ScreenWipeCharged -= OnScreenWipeCharged;
+            organs.TauntRequested -= OnTauntRequested;
+        }
 
-        organs.HealToFullRequested -= OnHealToFullRequested;
-        organs.HealAmountRequested -= OnHealAmountRequested;
-        organs.SpeedBuffRequested -= OnSpeedBuffRequested;
-        organs.InstakillRequested -= OnInstakillRequested;
-        organs.ScreenWipeCharged -= OnScreenWipeCharged;
-        organs.TauntRequested -= OnTauntRequested;
+        if (InputManager.Instance != null)
+        {
+            InputManager.Instance.QPressed -= OnQPressed;
+            InputManager.Instance.EPressed -= OnEPressed;
+            InputManager.Instance.RPressed -= OnRPressed;
+        }
     }
 
     private void OnHealToFullRequested() => playerHealth?.HealToFull();
@@ -69,38 +84,29 @@ public class PlayerOrganBridge : MonoBehaviour
         Debug.Log($"Taunt {t.name} {d}s");
     }
 
-    private void Update()
+
+    private void OnRPressed()
     {
         if (organs == null) return;
-        
-        if (organs.HasSlowTimeAbility && Input.GetKeyDown(KeyCode.T))
+
+        if (organs.TryUseEyesActive(out float slowDur))
         {
-            if (timeSlow != null) timeSlow.TriggerSlowTime(organs.SlowTimeDuration);
+            if (timeSlow != null)
+                timeSlow.TriggerSlowTime(slowDur);
         }
+    }
 
-        // ✅ Kidneys test trigger (TODO: replace with Input System)
-        if (Input.GetKeyDown(KeyCode.U))
-        {
-            if (stats == null) return;
+    private void OnEPressed()
+    {
+        if (organs == null) return;
 
-            if (organs.TryActivateKidneys(out float dur, out float speedMult, out float attackMult, out float healToPercent))
-            {
-                if (speedMult > 1f) stats.AddMoveSpeedMul(SRC_KIDNEYS_SPEED, speedMult, dur);
-                if (attackMult > 1f) stats.AddAttackMul(SRC_KIDNEYS_ATTACK, attackMult, dur);
-            }
-        }
+        organs.TryUseLungsActive();
+    }
 
-        if (Input.GetKeyDown(KeyCode.Y))
-        {
-            if (!organs.IsScreenWipeReady()) return;
-            organs.ConsumeScreenWipe();
+    private void OnQPressed()
+    {
+        if (organs == null) return;
 
-            var minions = GameObject.FindGameObjectsWithTag("Enemy");
-            foreach (var e in minions)
-            {
-                var hp = e.GetComponentInParent<Health>();
-                if (hp != null) hp.TakeDamage(gameObject, 999999f);
-            }
-        }
+        organs.TryUseStomachActive(gameObject);
     }
 }

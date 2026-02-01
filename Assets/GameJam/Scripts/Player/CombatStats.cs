@@ -10,6 +10,11 @@ public class CombatStats : MonoBehaviour
     public ModifiableStat MoveSpeed = new ModifiableStat();
     public ModifiableStat Attack = new ModifiableStat();
 
+    public float GetBaseAttack() => Attack.BaseValue;
+    public float GetBaseMoveSpeed() => MoveSpeed.BaseValue;
+
+
+
     private void Awake()
     {
         MoveSpeed.BaseValue = baseMoveSpeed;
@@ -93,7 +98,7 @@ public class CombatStats : MonoBehaviour
             endUnscaled = durationSeconds > 0f ? Time.unscaledTime + durationSeconds : -1f
         });
     }
-
+    
     public void RemoveAttackSource(string sourceId) => Attack.RemoveBySource(sourceId);
     public void RemoveMoveSpeedSource(string sourceId) => MoveSpeed.RemoveBySource(sourceId);
 }
