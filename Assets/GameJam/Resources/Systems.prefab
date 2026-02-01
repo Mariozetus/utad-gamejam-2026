@@ -187,6 +187,8 @@ MonoBehaviour:
   musicMixerGroup: {fileID: -8239167428907091886, guid: 10eb596330ca199408e71e69a142a833, type: 2}
   sfxMixerGroup: {fileID: -8386050339426031945, guid: 10eb596330ca199408e71e69a142a833, type: 2}
   musicSource: {fileID: 0}
+  musicIntroSource: {fileID: 0}
+  musicLoopSource: {fileID: 0}
   sfxSource: {fileID: 0}
   poolSize: 10
   soundLibraries: []
@@ -243,7 +245,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &5933248411635042014
 Transform:
   m_ObjectHideFlags: 0

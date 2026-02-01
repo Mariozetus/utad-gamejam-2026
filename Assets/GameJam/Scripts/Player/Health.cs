@@ -32,14 +32,19 @@ public class Health : MonoBehaviour
 
     private void Awake()
     {
-        maxHealth = Mathf.Max(1f, maxHealth);
-        currentHealth = Mathf.Clamp(currentHealth, 0f, maxHealth);
-
+        
         if (isPlayer)
         {
+            maxHealth = Mathf.Max(1f, maxHealth);
             _organs = GetComponent<OrgansManager>();
             _stats = GetComponent<CombatStats>();
         }
+        else
+        {
+            maxHealth = Mathf.Max(1f, GetComponent<Enemy>().EnemyStats.MaxHealth);
+        }
+        
+        currentHealth = Mathf.Clamp(currentHealth, 0f, maxHealth);
     }
 
     private void Update()
@@ -184,9 +189,7 @@ public class Health : MonoBehaviour
         }
         else
         {
-            var pc = GetComponent<PlayerController>();
-            if (pc != null) pc.enabled = false;
-            Debug.Log("Player died.");
+            GameManager.Instance.HandlePlayerDeath();
         }
     }
 

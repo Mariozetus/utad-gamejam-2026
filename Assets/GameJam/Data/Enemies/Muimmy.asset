@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Muimmy
   m_EditorClassIdentifier: Assembly-CSharp::EnemyStats
   enemyName: Mummy
+  isBoss: 0
   _moveSpeed: 10
   _maxHealth: 100
   _damage: 10

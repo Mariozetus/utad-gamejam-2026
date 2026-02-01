@@ -53,13 +53,4 @@ public class EnemyLifecycle : MonoBehaviour
     {
         Die();
     }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("DeathZone"))
-        {
-            Logger.Log($"Enemy {name} fell into death zone, returning to pool", LogType.SpawnSystem, this);
-            Die();
-        }
-    }
 }

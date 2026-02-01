@@ -43,14 +43,38 @@ public class guardianEnemy : Enemy
         foreach (Collider collider in player)
         {
             Logger.Log("he atacado a: " + collider.gameObject.name, LogType.Enemy, this);
+            var playerHealth = collider.GetComponent<Health>();
+            playerHealth?.TakeDamage(this.gameObject, enemyStats.Damage);
         }
     }
 
 
     protected void RangedAttack()
     {
-        var bullet = Instantiate(bulletprefab, attackpoint.position, attackpoint.rotation);
-        bullet.GetComponent<Rigidbody>().linearVelocity = attackpoint.forward * speed;
-        Logger.Log("he disparado");
+        GameObject bullet = EnemyManager.Instance.GetPooledProjectile(bulletprefab);
+        if (bullet != null)
+        {
+            bullet.transform.position = attackpoint.position;
+            bullet.transform.rotation = attackpoint.rotation;
+            
+            Rigidbody rb = bullet.GetComponent<Rigidbody>();
+            if (rb != null)
+            {
+                rb.linearVelocity = attackpoint.forward * speed;
+            }
+            
+            // Set damage if the bullet has the component
+            enemyBullet bulletScript = bullet.GetComponent<enemyBullet>();
+            if (bulletScript != null)
+            {
+                bulletScript.SetDamage(enemyStats.Damage);
+            }
+            
+            Logger.Log($"Fired pooled projectile from {name}", LogType.Enemy, this);
+        }
+        else
+        {
+            Logger.Warning("Failed to get projectile from pool", LogType.Enemy, this);
+        }
     }
 }

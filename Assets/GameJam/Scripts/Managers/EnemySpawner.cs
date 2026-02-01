@@ -75,7 +75,9 @@ public class EnemySpawner : MonoBehaviour
             {
                 if (CanSpawnNewEnemy())
                 {
-                    SpawnEnemy(_enemyWaves[_currentWaveIndex].GetRandomEnemyPrefab());
+                    GameObject enemyPrefab = _enemyWaves[_currentWaveIndex].GetRandomEnemyPrefab();
+                    Enemy enemy = enemyPrefab.GetComponent<Enemy>();
+                    SpawnEnemy(enemy);
                     _enemiesSpawnedInCurrentWave++;
                     _timeSinceLastSpawn = Time.time;
                 }

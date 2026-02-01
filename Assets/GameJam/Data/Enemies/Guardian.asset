@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Guardian
   m_EditorClassIdentifier: Assembly-CSharp::EnemyStats
   enemyName: Guardian
+  isBoss: 0
   _moveSpeed: 8
   _maxHealth: 3000
   _damage: 20

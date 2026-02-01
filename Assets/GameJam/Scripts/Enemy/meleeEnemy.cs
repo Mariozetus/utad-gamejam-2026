@@ -22,6 +22,8 @@ public class MeleeEnemy : Enemy
         foreach (Collider collider in player)
         {
             Logger.Log("he atacado a: "+ collider.gameObject.name, LogType.Enemy, this);
+            var playerHealth = collider.GetComponent<Health>();
+            playerHealth?.TakeDamage(this.gameObject, enemyStats.Damage);
         }
     }
 

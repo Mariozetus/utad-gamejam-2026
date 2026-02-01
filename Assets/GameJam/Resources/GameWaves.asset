@@ -15,19 +15,9 @@ MonoBehaviour:
   levelWaves:
   - gameLevel: {fileID: 11400000, guid: 056842b6f07b9974c9c6a39829f4dfa1, type: 2}
     waves:
-    - enemySpawnData: []
-      EnemiesPerSecond: 0
-      WaveDuration: 0
-      GracePeriodBeforeWave: 0
-    - enemySpawnData: []
-      EnemiesPerSecond: 0
-      WaveDuration: 0
-      GracePeriodBeforeWave: 0
     - enemySpawnData:
-      - enemyPrefab: {fileID: 0}
-        spawnChance: 0.28038916
-      - enemyPrefab: {fileID: 0}
-        spawnChance: 0.7196108
-      EnemiesPerSecond: 0
-      WaveDuration: 0
+      - enemyPrefab: {fileID: 8915197907382610951, guid: 9c44636d1a1a9b04eb3b8249e9d3cc77, type: 3}
+        spawnChance: 1
+      EnemiesPerSecond: 5
+      WaveDuration: 5
       GracePeriodBeforeWave: 0

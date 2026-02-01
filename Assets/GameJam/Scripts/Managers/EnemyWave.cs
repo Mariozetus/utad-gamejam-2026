@@ -7,7 +7,7 @@ public class EnemyWave{
     [System.Serializable]
     public class EnemySpawnData
     {
-        public Enemy enemyPrefab;
+        public GameObject enemyPrefab;
         [Range(0f, 1f)]
         public float spawnChance = 0.5f;
     }
@@ -17,7 +17,7 @@ public class EnemyWave{
     public float WaveDuration = 10f;
     public float GracePeriodBeforeWave = 5f;
 
-    public bool IsBossWave => enemySpawnData.Exists(data => data.enemyPrefab != null && data.enemyPrefab.EnemyStats != null && data.enemyPrefab.EnemyStats.IsBoss);
+    public bool IsBossWave => enemySpawnData.Exists(data => data.enemyPrefab != null && data.enemyPrefab.GetComponent<EnemyStats>() != null && data.enemyPrefab.GetComponent<EnemyStats>().IsBoss);
 
     public EnemyWave()
     {
@@ -56,7 +56,7 @@ public class EnemyWave{
         }
     }
 
-    public Enemy GetRandomEnemyPrefab()
+    public GameObject GetRandomEnemyPrefab()
     {
         if (enemySpawnData == null || enemySpawnData.Count == 0)
             return null;

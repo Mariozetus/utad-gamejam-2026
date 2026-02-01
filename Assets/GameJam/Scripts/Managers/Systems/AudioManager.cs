@@ -31,6 +31,8 @@ public class AudioManager : MonoBehaviour
 
     [Header("Audio Sources")]
     [SerializeField] private AudioSource musicSource;
+    [SerializeField] private AudioSource musicIntroSource;
+    [SerializeField] private AudioSource musicLoopSource;
     [SerializeField] private AudioSource sfxSource;
     [SerializeField] private int poolSize = 10;
 
@@ -88,6 +90,20 @@ public class AudioManager : MonoBehaviour
             musicSource.loop = true;
         }
 
+        if (musicIntroSource == null)
+        {
+            musicIntroSource = gameObject.AddComponent<AudioSource>();
+            musicIntroSource.playOnAwake = false;
+            musicIntroSource.loop = false;
+        }
+
+        if (musicLoopSource == null)
+        {
+            musicLoopSource = gameObject.AddComponent<AudioSource>();
+            musicLoopSource.playOnAwake = false;
+            musicLoopSource.loop = true;
+        }
+
         if (sfxSource == null)
         {
             sfxSource = gameObject.AddComponent<AudioSource>();
@@ -96,6 +112,8 @@ public class AudioManager : MonoBehaviour
         }
 
         musicSource.outputAudioMixerGroup = musicMixerGroup;
+        musicIntroSource.outputAudioMixerGroup = musicMixerGroup;
+        musicLoopSource.outputAudioMixerGroup = musicMixerGroup;
         sfxSource.outputAudioMixerGroup = sfxMixerGroup;
     }
 
@@ -519,6 +537,160 @@ public class AudioManager : MonoBehaviour
     {
         return musicSource != null && musicSource.isPlaying;
     }
+
+    #endregion
+
+    #region MusicTrack System (Intro + Loop)
+
+    private MusicTrack _currentMusicTrack;
+    private bool _isPlayingIntro = false;
+    private Coroutine _musicTrackCoroutine;
+
+    /// <summary>
+    /// Plays a music track with intro and loop system
+    /// </summary>
+    /// <param name="musicTrack">The MusicTrack to play</param>
+    public void PlayMusicTrack(MusicTrack musicTrack)
+    {
+        if (musicTrack == null || !musicTrack.IsValid)
+        {
+            Logger.Warning("Attempted to play invalid music track", LogType.Audio, this);
+            return;
+        }
+
+        Logger.Log($"Playing music track: {musicTrack.trackName}", LogType.Audio, this);
+        
+        // Stop current music
+        StopMusicTrack(false);
+        
+        _currentMusicTrack = musicTrack;
+
+        if (musicTrack.HasIntro)
+        {
+            // Play intro first, then loop
+            _musicTrackCoroutine = StartCoroutine(PlayIntroThenLoop(musicTrack));
+        }
+        else if (musicTrack.HasLoop)
+        {
+            // No intro, just play loop
+            PlayLoopOnly(musicTrack);
+        }
+    }
+
+    private IEnumerator PlayIntroThenLoop(MusicTrack track)
+    {
+        _isPlayingIntro = true;
+        
+        // Setup and play intro
+        musicIntroSource.clip = track.introClip;
+        musicIntroSource.volume = 0f;
+        musicIntroSource.Play();
+        
+        Logger.Log($"Playing intro for '{track.trackName}' ({track.IntroDuration:F1}s)", LogType.Audio, this);
+        
+        // Fade in intro
+        yield return StartCoroutine(FadeAudioSource(musicIntroSource, track.volume, track.fadeInDuration));
+        
+        // Wait for intro to finish (minus a small buffer for seamless transition)
+        float waitTime = track.IntroDuration - track.fadeInDuration - 0.1f;
+        if (waitTime > 0)
+        {
+            yield return new WaitForSeconds(waitTime);
+        }
+        
+        // Prepare loop if available
+        if (track.HasLoop)
+        {
+            musicLoopSource.clip = track.loopClip;
+            musicLoopSource.volume = track.volume;
+            musicLoopSource.Play();
+            
+            Logger.Log($"Starting loop for '{track.trackName}'", LogType.Audio, this);
+        }
+        
+        // Wait for intro to completely finish
+        yield return new WaitForSeconds(0.1f);
+        
+        // Stop intro
+        musicIntroSource.Stop();
+        _isPlayingIntro = false;
+        
+        Logger.Log($"Intro finished, loop active for '{track.trackName}'", LogType.Audio, this);
+    }
+
+    private void PlayLoopOnly(MusicTrack track)
+    {
+        musicLoopSource.clip = track.loopClip;
+        musicLoopSource.volume = 0f;
+        musicLoopSource.Play();
+        
+        Logger.Log($"Playing loop only for '{track.trackName}'", LogType.Audio, this);
+        
+        // Fade in loop
+        StartCoroutine(FadeAudioSource(musicLoopSource, track.volume, track.fadeInDuration));
+    }
+
+    public void StopMusicTrack(bool fadeOut = true)
+    {
+        if (_currentMusicTrack == null) return;
+        
+        Logger.Log($"Stopping music track: {_currentMusicTrack.trackName}", LogType.Audio, this);
+        
+        if (_musicTrackCoroutine != null)
+        {
+            StopCoroutine(_musicTrackCoroutine);
+            _musicTrackCoroutine = null;
+        }
+
+        if (fadeOut)
+        {
+            StartCoroutine(FadeOutMusicTrack(_currentMusicTrack.fadeOutDuration));
+        }
+        else
+        {
+            musicIntroSource.Stop();
+            musicLoopSource.Stop();
+            _currentMusicTrack = null;
+            _isPlayingIntro = false;
+        }
+    }
+
+    private IEnumerator FadeOutMusicTrack(float fadeTime)
+    {
+        yield return StartCoroutine(FadeAudioSource(musicIntroSource, 0f, fadeTime));
+        yield return StartCoroutine(FadeAudioSource(musicLoopSource, 0f, fadeTime));
+        
+        musicIntroSource.Stop();
+        musicLoopSource.Stop();
+        _currentMusicTrack = null;
+        _isPlayingIntro = false;
+    }
+
+    private IEnumerator FadeAudioSource(AudioSource source, float targetVolume, float duration)
+    {
+        if (source == null || duration <= 0f)
+        {
+            if (source != null) source.volume = targetVolume;
+            yield break;
+        }
+
+        float startVolume = source.volume;
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.unscaledDeltaTime;
+            float t = elapsed / duration;
+            source.volume = Mathf.Lerp(startVolume, targetVolume, t);
+            yield return null;
+        }
+
+        source.volume = targetVolume;
+    }
+
+    public bool IsMusicTrackPlaying => _currentMusicTrack != null && (musicIntroSource.isPlaying || musicLoopSource.isPlaying);
+    public string CurrentMusicTrackName => _currentMusicTrack?.trackName ?? "None";
+    public bool IsPlayingMusicIntro => _isPlayingIntro;
 
     #endregion
 }

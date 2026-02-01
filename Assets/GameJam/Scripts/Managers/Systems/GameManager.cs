@@ -60,7 +60,16 @@ public class GameManager : MonoBehaviour
         AudioManager.Instance.StopAllSounds();
         SceneController.Instance.LoadScene(gameLevel.Scene);
         CurrentLevel = gameLevel;
-        AudioManager.Instance.PlayMusic(gameLevel.LevelMusic);
+        
+        // Try to play MusicTrack first, fallback to legacy string
+        if (gameLevel.LevelMusic != null && gameLevel.LevelMusic.IsValid)
+        {
+            AudioManager.Instance.PlayMusicTrack(gameLevel.LevelMusic);
+        }
+        else if (!string.IsNullOrEmpty(gameLevel.LegacyMusicName))
+        {
+            AudioManager.Instance.PlayMusic(gameLevel.LegacyMusicName);
+        }
     }
 
     private void AddLevelsToDictionary(GameLevel[] gameLevels)

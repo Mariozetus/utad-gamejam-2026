@@ -25,6 +25,7 @@ public class RangedEnemy : Enemy
     protected override void Attack()
     {
         var bullet = Instantiate(bulletprefab, attackpoint.position, attackpoint.rotation);
+        bullet.GetComponent<enemyBullet>().SetDamage(enemyStats.Damage);
         bullet.GetComponent<Rigidbody>().linearVelocity = attackpoint.forward * speed;
         Logger.Log("he disparado");
     }

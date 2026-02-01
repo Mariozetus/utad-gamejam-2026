@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 5346506512933531487}
   - component: {fileID: 4392648148941827849}
   - component: {fileID: 198940772278656324}
+  - component: {fileID: 7786164749751368601}
   m_Layer: 0
   m_Name: rangedEnemy
   m_TagString: Untagged
@@ -171,10 +172,30 @@ MonoBehaviour:
   playerLayer:
     serializedVersion: 2
     m_Bits: 64
-  startShotCoolDown: 3
+  startShotCoolDown: 1
   shotCoolDown: 0
   bulletprefab: {fileID: 2104141845373853977, guid: 66f85afd41a22a0469df1899a2332d37, type: 3}
   speed: 10
+--- !u!114 &7786164749751368601
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2084648024850448992}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee3846f27a94ec94599b19223ee6ac84, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Health
+  liverRegenPercentPerSecond: 0.05
+  isPlayer: 0
+  maxHealth: 100
+  currentHealth: 100
+  Enemy: 1
+  UseHealthBar: 0
+  PlayerHealthBarUI: {fileID: 0}
+  EnemyBossHealthBarUI: {fileID: 0}
 --- !u!1 &2122553292940081785
 GameObject:
   m_ObjectHideFlags: 0

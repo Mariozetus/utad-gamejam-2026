@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 2407779571014572446}
   - component: {fileID: 5310700987817842063}
   - component: {fileID: 5701188328611469312}
+  - component: {fileID: -4881071625241595676}
   m_Layer: 0
   m_Name: meleeEnemy
   m_TagString: Untagged
@@ -173,6 +174,26 @@ MonoBehaviour:
     m_Bits: 64
   startShotCoolDown: 3
   shotCoolDown: 0
+--- !u!114 &-4881071625241595676
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4284991606319839851}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee3846f27a94ec94599b19223ee6ac84, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Health
+  liverRegenPercentPerSecond: 0.05
+  isPlayer: 0
+  maxHealth: 100
+  currentHealth: 100
+  Enemy: 1
+  UseHealthBar: 0
+  PlayerHealthBarUI: {fileID: 0}
+  EnemyBossHealthBarUI: {fileID: 0}
 --- !u!1 &8516292362783743791
 GameObject:
   m_ObjectHideFlags: 0
