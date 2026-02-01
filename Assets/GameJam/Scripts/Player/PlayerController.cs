@@ -10,7 +10,22 @@ public class PlayerController : MonoBehaviour
 
     [Header("ROTATION SETTINGS")]
     [Range(0f, 20f)] [SerializeField] private float rotationSpeed = 5f;
+    
+    [Header("Rotation Lerp")]
+    [SerializeField] private bool useUnscaledRotationLerp = false;
 
+    [Header("STATS")]
+    [SerializeField] private CombatStats stats;
+
+    [Header("FIREBALL PREFAB / SETTINGS")]
+    [SerializeField] protected GameObject fireballprefab;
+    [SerializeField] protected float fireballspeed = 10f; 
+    [SerializeField] private Transform attackpoint;
+    [SerializeField] private float attackrange = 10f;
+    [SerializeField] private LayerMask enemyLayer;
+    [SerializeField] private float startShotCoolDown = 1f;
+
+    private float shotCoolDown = 0f;
     private Vector2 _currentInput;
     private Vector3 _velocity;
     private CharacterController _characterController;
@@ -21,16 +36,13 @@ public class PlayerController : MonoBehaviour
 
     public bool screenPaused;
 
-    [Header("Rotation Lerp")]
-    [SerializeField] private bool useUnscaledRotationLerp = false;
-
-    [Header("STATS")]
-    [SerializeField] private CombatStats stats;
-
     private void Awake()
     {
         Instance = this;
-        if (stats == null) stats = GetComponent<CombatStats>();
+        if (stats == null) 
+        {
+            stats = GetComponent<CombatStats>();
+        }
 
         GameManager.Instance.RegisterPlayer(this);
     }
@@ -56,6 +68,18 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        RaycastHit hit;
+        if (shotCoolDown <= 0)
+        {
+            if (Physics.Raycast(transform.position, transform.forward, out hit, attackrange, enemy))
+            {
+                Attack();
+                shotCoolDown = startShotCoolDown;
+            }
+        }
+
+        shotCoolDown -= Time.deltaTime;
+
         UpdateMovement();
         ApplyTotalVelocity();
     }
@@ -85,7 +109,6 @@ public class PlayerController : MonoBehaviour
     }
 
     public void setPause(bool p) => screenPaused = p;
-
     private void ApplyTotalVelocity()
     {
         _characterController.SimpleMove(_velocity);
@@ -99,12 +122,40 @@ public class PlayerController : MonoBehaviour
 
     public void Attack()
     {
-
-        Logger.Log("Normal Attack");
+        var enemies = attackCollisions.GetEnemiesInTrigger();
+        if (enemies != null)
+        {
+            // first one.
+            var enemy = enemies[0];
+            if (enemy.layer == LayerMask.NameToLayer("Enemy"))
+            {
+                var health = enemy.GetComponent<Health>();
+                if (health != null)
+                {
+                    health.TakeDamage(gameObject, stats.Attack.BaseValue);
+                }
+            }
+        }
     }
 
     public void RangedAttack()
     {
-        Logger.Log("Range");
+        if (fireballprefab == null)
+        {
+            return;
+        }
+
+        var bulletLoc = Instantiate(fireballprefab, attackpoint.position,attackpoint.rotation);
+        
+        var fireball = bulletLoc.GetComponent<PlayerFireball>();
+        if (fireball != null)
+        {
+            fireball.SetDamage(stats.Attack.BaseValue);
+        }
+        var rb = bullet.GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.linearVelocity = attackpoint.forward * fireballspeed;
+        }
     }
 }
