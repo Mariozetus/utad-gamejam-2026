@@ -23,6 +23,7 @@ public class EnemyFollow : MonoBehaviour
             _agent.speed = _followSpeed;
             Logger.Log("Following Player " + player.transform.position, LogType.Enemy, this);
             _agent.SetDestination(player.transform.position);
+            transform.LookAt(player.transform.position);
 
         }
 

@@ -1529,11 +1529,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1001342638457561454, guid: 9c44636d1a1a9b04eb3b8249e9d3cc77, type: 3}
       propertyPath: m_StoppingDistance
-      value: 1.5
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 2421829301788240285, guid: 9c44636d1a1a9b04eb3b8249e9d3cc77, type: 3}
       propertyPath: meleeRange
-      value: 1.5
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 2421829301788240285, guid: 9c44636d1a1a9b04eb3b8249e9d3cc77, type: 3}
       propertyPath: startShotCoolDown
